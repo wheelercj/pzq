@@ -18,8 +18,8 @@ class TextInput(Widget):
 
 
 class Timer(Widget):
-    MAX_SECONDS = 20 * 60
     TRANSITION_SECONDS = 30
+    MAX_SECONDS = 20 * 60 + TRANSITION_SECONDS
     MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
     remaining_seconds = MAX_SECONDS
     MODES = ["group meeting", "20-minute individual meetings"]
@@ -64,7 +64,6 @@ class Timer(Widget):
                         next_seconds = (
                             self.remaining_seconds
                             + ((i) * self.MAX_SECONDS)
-                            + ((i) * self.TRANSITION_SECONDS)
                         )
                         timer_message += (
                             f"{next_seconds // 60}:{next_seconds % 60:02} {name}\n\n"
