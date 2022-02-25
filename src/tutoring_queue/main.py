@@ -122,11 +122,17 @@ class TimerApp(App):
         if self.receiving_text_input:
             if event.key == "enter":
                 self.receiving_text_input = False
-                name = self.widgets.text_input.text[len("name: ") :]
-                self.widgets.timer.student_names.append(name)
+                name = self.widgets.text_input.text[len("name: ") :].strip()
                 self.widgets.text_input.text = ""
-                if len(self.widgets.timer.student_names) == 1:
-                    self.widgets.timer.pause = False
+                if name:
+                    if name in self.widgets.timer.student_names:
+                        if not name.endswith(" II"):
+                            name += " II"
+                        else:
+                            name += "I"
+                    self.widgets.timer.student_names.append(name)
+                    if len(self.widgets.timer.student_names) == 1:
+                        self.widgets.timer.pause = False
             elif event.key == "ctrl+h":  # backspace
                 if len(self.widgets.text_input.text) > len("name: "):
                     self.widgets.text_input.text = self.widgets.text_input.text[:-1]
