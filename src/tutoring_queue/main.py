@@ -23,15 +23,15 @@ class TextInput(Widget):
 
 class Timer(Widget):
     TRANSITION_SECONDS = 30
-    MAX_SECONDS = 20 * 60 + TRANSITION_SECONDS
+    MAX_INDIVIDUAL_SECONDS = 20 * 60 + TRANSITION_SECONDS
     MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
-    individual_meeting_seconds = MAX_SECONDS  # counts down
-    group_meeting_seconds = 0  # counts up
+    individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
+    group_seconds = 0  # counts up
     MODES = ["group meeting", "20-minute individual meetings"]
     current_mode_index = 0
     student_names = []
     pause = True
-    previous_remaining_seconds = None
+    previous_individual_seconds = None
 
     def on_mount(self):
         self.set_interval(1, self.refresh)
@@ -39,29 +39,29 @@ class Timer(Widget):
     def render(self):
         if (
             self.student_names
-            and self.individual_meeting_seconds
+            and self.individual_seconds
             and not self.pause
             and (
                 (self.current_mode_index == 1 and len(self.student_names) > 1)
-                or self.individual_meeting_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
+                or self.individual_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
             )
         ):
-            self.individual_meeting_seconds -= 1
+            self.individual_seconds -= 1
         if self.current_mode_index == 0 and self.student_names:
-            self.group_meeting_seconds += 1
-        if self.individual_meeting_seconds == self.TRANSITION_SECONDS:
+            self.group_seconds += 1
+        if self.individual_seconds == self.TRANSITION_SECONDS:
             chime.success()
-        elif self.individual_meeting_seconds == 1:
+        elif self.individual_seconds == 1:
             chime.info()
         if not self.student_names:
-            self.group_meeting_seconds = 0
+            self.group_seconds = 0
             return Align.center("\n\n\n\n\n(no students in queue)")
         else:
             timer_message = (
                 f"[bright_black]{self.MODES[self.current_mode_index]}[/bright_black]"
             )
             if self.current_mode_index == 0:
-                timer_message += f"       [bright_black]{format_time(self.group_meeting_seconds)}[/bright_black]"
+                timer_message += f"       [bright_black]{format_time(self.group_seconds)}[/bright_black]"
             timer_message += (
                 "\n\n[u][b]meeting in progress with:[/b][/u]"
                 f"\n{self.student_names[0]}"
@@ -73,8 +73,8 @@ class Timer(Widget):
                 else:
                     timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
                     for i, name in enumerate(self.student_names[1:]):
-                        next_seconds = self.individual_meeting_seconds + (
-                            i * self.MAX_SECONDS
+                        next_seconds = self.individual_seconds + (
+                            i * self.MAX_INDIVIDUAL_SECONDS
                         )
                         timer_message += f"{format_time(next_seconds)} {name}\n\n"
             return Align.center("\n\n\n\n\n" + timer_message)
@@ -145,11 +145,11 @@ class TimerApp(App):
                 self.widgets.timer.student_names.append(
                     self.widgets.timer.student_names.pop(0)
                 )
-                self.widgets.timer.previous_remaining_seconds = (
-                    self.widgets.timer.individual_meeting_seconds
+                self.widgets.timer.previous_individual_seconds = (
+                    self.widgets.timer.individual_seconds
                 )
-                self.widgets.timer.individual_meeting_seconds = (
-                    self.widgets.timer.MAX_SECONDS
+                self.widgets.timer.individual_seconds = (
+                    self.widgets.timer.MAX_INDIVIDUAL_SECONDS
                 )
             elif event.key == "!":
                 # remove the student at the end of the queue
@@ -163,35 +163,35 @@ class TimerApp(App):
                     not self.widgets.timer.current_mode_index
                 )
                 if self.widgets.timer.current_mode_index == 1:
-                    self.widgets.timer.group_meeting_seconds = 0
+                    self.widgets.timer.group_seconds = 0
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
             elif event.key == "j":
                 # add 5 seconds to the current meeting
-                self.widgets.timer.individual_meeting_seconds += 5
+                self.widgets.timer.individual_seconds += 5
             elif event.key == "l":
                 # subtract up to 5 seconds from the current meeting
-                if self.widgets.timer.individual_meeting_seconds >= 5:
-                    self.widgets.timer.individual_meeting_seconds -= 5
+                if self.widgets.timer.individual_seconds >= 5:
+                    self.widgets.timer.individual_seconds -= 5
                 else:
-                    self.widgets.timer.individual_meeting_seconds = 0
+                    self.widgets.timer.individual_seconds = 0
             elif event.key == "r":
                 # reset the timer
-                self.widgets.timer.individual_meeting_seconds = (
-                    self.widgets.timer.MAX_SECONDS
+                self.widgets.timer.individual_seconds = (
+                    self.widgets.timer.MAX_INDIVIDUAL_SECONDS
                 )
                 self.widgets.timer.pause = True
             elif (
                 event.key == "z"
-                and self.widgets.timer.previous_remaining_seconds is not None
+                and self.widgets.timer.previous_individual_seconds is not None
             ):
                 # return to the previous meeting
-                temp = self.widgets.timer.individual_meeting_seconds
-                self.widgets.timer.individual_meeting_seconds = (
-                    self.widgets.timer.previous_remaining_seconds
+                temp = self.widgets.timer.individual_seconds
+                self.widgets.timer.individual_seconds = (
+                    self.widgets.timer.previous_individual_seconds
                 )
-                self.widgets.timer.previous_remaining_seconds = temp
+                self.widgets.timer.previous_individual_seconds = temp
                 self.widgets.timer.student_names.insert(
                     0, self.widgets.timer.student_names.pop()
                 )
