@@ -133,7 +133,7 @@ class TimerApp(App):
                 else:
                     self.receiving_text_input = False
                     self.widgets.text_input.text = ""
-            elif not event.key.startswith("ctrl+"):
+            elif len(event.key) == 1:
                 self.widgets.text_input.text += event.key
         else:
             if event.key == "a":
