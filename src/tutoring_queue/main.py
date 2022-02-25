@@ -6,6 +6,8 @@ from textual.reactive import Reactive
 from textual.views import GridView
 from textual.widgets import ScrollView
 from textwrap import dedent
+import random
+import chime
 
 
 class TextInput(Widget):
@@ -20,6 +22,8 @@ class Timer(Widget):
     TRANSITION_SECONDS = 30
     MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
     remaining_seconds = MAX_SECONDS
+    MODES = ["group meeting", "20-minute individual meetings"]
+    current_mode_index = 0
     student_names = []
     pause = True
     previous_remaining_seconds = None
@@ -33,27 +37,39 @@ class Timer(Widget):
             and self.remaining_seconds
             and not self.pause
             and (
-                len(self.student_names) > 1
+                (self.current_mode_index == 1 and len(self.student_names) > 1)
                 or self.remaining_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
             )
         ):
             self.remaining_seconds -= 1
-        if self.student_names:
-            time = f"[u][b]meeting in progress with:[/b][/u]\n{self.student_names[0]}"
-            if len(self.student_names) > 1:
-                time += f"\n\n[u][b]waiting:[/b][/u]\n"
-                for i, name in enumerate(self.student_names[1:]):
-                    next_seconds = (
-                        self.remaining_seconds
-                        + ((i) * self.MAX_SECONDS)
-                        + ((i) * self.TRANSITION_SECONDS)
-                    )
-                    time += (
-                        f"{name}: up to {next_seconds // 60}:{next_seconds % 60:02}\n\n"
-                    )
-            return Align.center("\n\n\n\n\n" + time)
-        else:
+        if self.remaining_seconds == 30:
+            chime.success()
+        elif self.remaining_seconds == 1:
+            chime.info()
+        if not self.student_names:
             return Align.center("\n\n\n\n\n(no students in queue)")
+        else:
+            timer_message = (
+                f"[bright_black]{self.MODES[self.current_mode_index]}[/bright_black]"
+                "\n\n[u][b]meeting in progress with:[/b][/u]"
+                f"\n{self.student_names[0]}"
+            )
+            if len(self.student_names) > 1:
+                if self.current_mode_index == 0:
+                    for i, name in enumerate(self.student_names[1:]):
+                        timer_message += f"\n{name}"
+                else:
+                    timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
+                    for i, name in enumerate(self.student_names[1:]):
+                        next_seconds = (
+                            self.remaining_seconds
+                            + ((i) * self.MAX_SECONDS)
+                            + ((i) * self.TRANSITION_SECONDS)
+                        )
+                        timer_message += (
+                            f"{next_seconds // 60}:{next_seconds % 60:02} {name}\n\n"
+                        )
+            return Align.center("\n\n\n\n\n" + timer_message)
 
 
 class TimerAppWidgets(GridView):
@@ -106,6 +122,9 @@ class TimerApp(App):
             elif event.key == "ctrl+h":  # backspace
                 if len(self.widgets.text_input.text) > len("name: "):
                     self.widgets.text_input.text = self.widgets.text_input.text[:-1]
+                else:
+                    self.receiving_text_input = False
+                    self.widgets.text_input.text = ""
             elif not event.key.startswith("ctrl+"):
                 self.widgets.text_input.text += event.key
         else:
@@ -125,6 +144,14 @@ class TimerApp(App):
             elif event.key == "!":
                 # remove the student at the end of the queue
                 self.widgets.timer.student_names.pop()
+            elif event.key == "$":
+                # randomize the order of the students in the queue
+                random.shuffle(self.widgets.timer.student_names)
+            elif event.key == "m":
+                # toggle the queue mode
+                self.widgets.timer.current_mode_index = int(
+                    not self.widgets.timer.current_mode_index
+                )
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
