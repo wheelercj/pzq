@@ -1,7 +1,9 @@
 from rich.align import Align
+from rich.markdown import Markdown
 from textual.app import App
 from textual.widget import Widget
 from textual.reactive import Reactive
+from textual.views import GridView
 from textual.widgets import ScrollView
 from textwrap import dedent
 
@@ -10,7 +12,7 @@ class TextInput(Widget):
     text = Reactive("")
 
     def render(self):
-        return Align.center(self.text)
+        return Markdown(self.text)
 
 
 class Timer(Widget):
@@ -36,14 +38,13 @@ class Timer(Widget):
             )
             time += f"up to {next_seconds // 60}:{next_seconds % 60:02}\n\n"
         if self.queue_size:
-            return Align.center(time, vertical="middle")
+            return Align.center("\n\n\n\n\n" + time)
         else:
-            return Align.center("up to 00:00", vertical="middle")
+            return Align.center("\n\n\n\n\nup to 00:00")
 
 
-class TimerApp(App):
+class TimerAppWidgets(GridView):
     timer = Timer()
-    receiving_text_input = False
     text_input = TextInput()
     WELCOME_MESSAGE = dedent(
         """\
@@ -53,55 +54,84 @@ class TimerApp(App):
         """
     )
 
-    async def on_mount(self):
-        await self.view.dock(
-            ScrollView(self.WELCOME_MESSAGE, gutter=(5, 5)), self.timer, self.text_input
+    def on_mount(self):
+        self.grid.set_gap(2, 1)
+        self.grid.set_gutter(1)
+        self.grid.set_align("center", "center")
+
+        self.grid.add_column("col", repeat=2)
+        self.grid.add_row("row", repeat=15)
+        self.grid.add_areas(
+            text_input="col1-start|col2-end,row15",
+            welcome_message="col1,row1-start|row14-end",
+            timer="col2,row1-start|row14-end",
         )
+
+        self.grid.place(
+            text_input=self.text_input,
+            welcome_message=ScrollView(self.WELCOME_MESSAGE, gutter=(5, 5)),
+            timer=self.timer,
+        )
+
+
+class TimerApp(App):
+    receiving_text_input = False
+    widgets = TimerAppWidgets()
+
+    async def on_mount(self):
+        await self.view.dock(self.widgets)
 
     async def on_key(self, event):
         if self.receiving_text_input:
-            if event.key == "1":
+            if event.key == "enter":
                 self.receiving_text_input = False
-                self.text_input.text = ""
-            elif event.key == "0":
-                if self.text_input.text:
-                    self.text_input.text = self.text_input.text[:-1]
+                self.widgets.text_input.text = ""
+            elif event.key == "ctrl+h":  # backspace
+                if self.widgets.text_input.text:
+                    self.widgets.text_input.text = self.widgets.text_input.text[:-1]
             else:
-                self.text_input.text += event.key
+                self.widgets.text_input.text += event.key
         else:
             if event.key == "a":
                 # add a student to the queue
-                self.timer.queue_size += 1
-                if self.timer.queue_size == 1:
-                    self.timer.pause = False
+                self.widgets.timer.queue_size += 1
+                if self.widgets.timer.queue_size == 1:
+                    self.widgets.timer.pause = False
                 self.receiving_text_input = True
             elif event.key == "n":
                 # go to the next student in queue
-                self.timer.queue_size -= 1
-                self.timer.previous_remaining_seconds = self.timer.remaining_seconds
-                self.timer.remaining_seconds = self.timer.MAX_SECONDS
+                self.widgets.timer.queue_size -= 1
+                self.widgets.timer.previous_remaining_seconds = (
+                    self.widgets.timer.remaining_seconds
+                )
+                self.widgets.timer.remaining_seconds = self.widgets.timer.MAX_SECONDS
             elif event.key == "k":
                 # pause the timers
-                self.timer.pause = not self.timer.pause
+                self.widgets.timer.pause = not self.widgets.timer.pause
             elif event.key == "j":
                 # add 5 seconds to the current meeting
-                self.timer.remaining_seconds += 5
+                self.widgets.timer.remaining_seconds += 5
             elif event.key == "l":
                 # subtract up to 5 seconds from the current meeting
-                if self.timer.remaining_seconds >= 5:
-                    self.timer.remaining_seconds -= 5
+                if self.widgets.timer.remaining_seconds >= 5:
+                    self.widgets.timer.remaining_seconds -= 5
                 else:
-                    self.timer.remaining_seconds = 0
-            elif event.key == 'r':
+                    self.widgets.timer.remaining_seconds = 0
+            elif event.key == "r":
                 # reset the timer
-                self.timer.remaining_seconds = self.timer.MAX_SECONDS
-                self.timer.pause = True
-            elif event.key == "z" and self.timer.previous_remaining_seconds is not None:
+                self.widgets.timer.remaining_seconds = self.widgets.timer.MAX_SECONDS
+                self.widgets.timer.pause = True
+            elif (
+                event.key == "z"
+                and self.widgets.timer.previous_remaining_seconds is not None
+            ):
                 # return to the previous meeting
-                temp = self.timer.remaining_seconds
-                self.timer.remaining_seconds = self.timer.previous_remaining_seconds
-                self.timer.previous_remaining_seconds = temp
-                self.timer.queue_size += 1
+                temp = self.widgets.timer.remaining_seconds
+                self.widgets.timer.remaining_seconds = (
+                    self.widgets.timer.previous_remaining_seconds
+                )
+                self.widgets.timer.previous_remaining_seconds = temp
+                self.widgets.timer.queue_size += 1
 
 
 TimerApp.run(log="textual.log")
