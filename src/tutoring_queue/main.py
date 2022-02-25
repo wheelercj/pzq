@@ -18,8 +18,9 @@ class TextInput(Widget):
 class Timer(Widget):
     MAX_SECONDS = 20 * 60
     TRANSITION_SECONDS = 30
+    MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
     remaining_seconds = MAX_SECONDS
-    queue_size = 0
+    student_names = []
     pause = True
     previous_remaining_seconds = None
 
@@ -27,20 +28,32 @@ class Timer(Widget):
         self.set_interval(1, self.refresh)
 
     def render(self):
-        if self.queue_size and self.remaining_seconds and not self.pause:
-            self.remaining_seconds -= 1
-        time = ""
-        for i in range(self.queue_size):
-            next_seconds = (
-                self.remaining_seconds
-                + (i * self.MAX_SECONDS)
-                + (i * self.TRANSITION_SECONDS)
+        if (
+            self.student_names
+            and self.remaining_seconds
+            and not self.pause
+            and (
+                len(self.student_names) > 1
+                or self.remaining_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
             )
-            time += f"up to {next_seconds // 60}:{next_seconds % 60:02}\n\n"
-        if self.queue_size:
+        ):
+            self.remaining_seconds -= 1
+        if self.student_names:
+            time = f"[u][b]meeting in progress with:[/b][/u]\n{self.student_names[0]}"
+            if len(self.student_names) > 1:
+                time += f"\n\n[u][b]waiting:[/b][/u]\n"
+                for i, name in enumerate(self.student_names[1:]):
+                    next_seconds = (
+                        self.remaining_seconds
+                        + ((i) * self.MAX_SECONDS)
+                        + ((i) * self.TRANSITION_SECONDS)
+                    )
+                    time += (
+                        f"{name}: up to {next_seconds // 60}:{next_seconds % 60:02}\n\n"
+                    )
             return Align.center("\n\n\n\n\n" + time)
         else:
-            return Align.center("\n\n\n\n\nup to 00:00")
+            return Align.center("\n\n\n\n\n(no students in queue)")
 
 
 class TimerAppWidgets(GridView):
@@ -85,9 +98,10 @@ class TimerApp(App):
         if self.receiving_text_input:
             if event.key == "enter":
                 self.receiving_text_input = False
+                name = self.widgets.text_input.text[len("name: ") :]
+                self.widgets.timer.student_names.append(name)
                 self.widgets.text_input.text = ""
-                self.widgets.timer.queue_size += 1
-                if self.widgets.timer.queue_size == 1:
+                if len(self.widgets.timer.student_names) == 1:
                     self.widgets.timer.pause = False
             elif event.key == "ctrl+h":  # backspace
                 if len(self.widgets.text_input.text) > len("name: "):
@@ -101,11 +115,16 @@ class TimerApp(App):
                 self.widgets.text_input.text = "name: "
             elif event.key == "n":
                 # go to the next student in queue
-                self.widgets.timer.queue_size -= 1
+                self.widgets.timer.student_names.append(
+                    self.widgets.timer.student_names.pop(0)
+                )
                 self.widgets.timer.previous_remaining_seconds = (
                     self.widgets.timer.remaining_seconds
                 )
                 self.widgets.timer.remaining_seconds = self.widgets.timer.MAX_SECONDS
+            elif event.key == "!":
+                # remove the student at the end of the queue
+                self.widgets.timer.student_names.pop()
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
@@ -132,7 +151,9 @@ class TimerApp(App):
                     self.widgets.timer.previous_remaining_seconds
                 )
                 self.widgets.timer.previous_remaining_seconds = temp
-                self.widgets.timer.queue_size += 1
+                self.widgets.timer.student_names.insert(
+                    0, self.widgets.timer.student_names.pop()
+                )
 
 
 TimerApp.run(log="textual.log")
