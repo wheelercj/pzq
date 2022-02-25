@@ -86,18 +86,19 @@ class TimerApp(App):
             if event.key == "enter":
                 self.receiving_text_input = False
                 self.widgets.text_input.text = ""
+                self.widgets.timer.queue_size += 1
+                if self.widgets.timer.queue_size == 1:
+                    self.widgets.timer.pause = False
             elif event.key == "ctrl+h":  # backspace
-                if self.widgets.text_input.text:
+                if len(self.widgets.text_input.text) > len("name: "):
                     self.widgets.text_input.text = self.widgets.text_input.text[:-1]
-            else:
+            elif not event.key.startswith("ctrl+"):
                 self.widgets.text_input.text += event.key
         else:
             if event.key == "a":
                 # add a student to the queue
-                self.widgets.timer.queue_size += 1
-                if self.widgets.timer.queue_size == 1:
-                    self.widgets.timer.pause = False
                 self.receiving_text_input = True
+                self.widgets.text_input.text = "name: "
             elif event.key == "n":
                 # go to the next student in queue
                 self.widgets.timer.queue_size -= 1
