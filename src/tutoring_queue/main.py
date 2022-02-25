@@ -1,13 +1,13 @@
-from rich.align import Align
+from rich.align import Align  # https://github.com/Textualize/rich
 from rich.markdown import Markdown
-from textual.app import App
+from textual.app import App  # https://github.com/Textualize/textual
 from textual.widget import Widget
 from textual.reactive import Reactive
 from textual.views import GridView
 from textual.widgets import ScrollView
 from textwrap import dedent
 import random
-import chime
+import chime  # https://pypi.org/project/chime/
 
 
 def format_time(seconds):
