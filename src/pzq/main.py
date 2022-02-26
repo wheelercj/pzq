@@ -1,6 +1,7 @@
 from rich.align import Align  # https://github.com/Textualize/rich
 from rich.markdown import Markdown
 from textual.app import App  # https://github.com/Textualize/textual
+from textual.events import Key
 from textual.widget import Widget
 from textual.reactive import Reactive
 from textual.views import GridView
@@ -11,14 +12,14 @@ import chime  # https://pypi.org/project/chime/
 import sqlite3
 
 
-def format_time(seconds):
+def format_time(seconds: int) -> str:
     return f"{seconds // 60}:{seconds % 60:02}"
 
 
 class TextInput(Widget):
     text = Reactive("")
 
-    def render(self):
+    def render(self) -> Markdown:
         return Markdown(self.text)
 
 
@@ -35,11 +36,11 @@ class Timer(Widget):
     pause = True
     previous_individual_seconds = None
 
-    def on_mount(self):
+    def on_mount(self) -> None:
         self.set_interval(1, self.refresh)
         self.set_interval(3, self.save_all_students)
 
-    def save_all_students(self):
+    def save_all_students(self) -> None:
         with sqlite3.connect("students.db") as conn:
             conn.execute("DELETE FROM students")
             cursor = conn.cursor()
@@ -50,7 +51,7 @@ class Timer(Widget):
                 )
             conn.commit()
 
-    def render(self):
+    def render(self) -> Align:
         if (
             self.student_names
             and self.individual_seconds
@@ -110,7 +111,7 @@ class TimerAppWidgets(GridView):
         """
     )
 
-    def on_mount(self):
+    def on_mount(self) -> None:
         self.grid.set_gap(2, 1)
         self.grid.set_gutter(1)
         self.grid.set_align("center", "center")
@@ -134,7 +135,7 @@ class TimerApp(App):
     receiving_text_input = False
     widgets = TimerAppWidgets()
 
-    async def on_mount(self):
+    async def on_mount(self) -> None:
         try:
             self.load_students()
         except sqlite3.OperationalError:
@@ -151,7 +152,7 @@ class TimerApp(App):
                 conn.commit()
         await self.view.dock(self.widgets)
 
-    def load_students(self):
+    def load_students(self) -> None:
         with sqlite3.connect("students.db") as conn:
             cursor = conn.cursor()
             try:
@@ -162,7 +163,7 @@ class TimerApp(App):
             except IndexError:
                 pass
 
-    async def on_key(self, event):
+    async def on_key(self, event: Key) -> None:
         if self.receiving_text_input:
             if event.key == "enter":
                 self.receiving_text_input = False
