@@ -149,10 +149,13 @@ class TimerApp(App):
     def load_students(self):
         with sqlite3.connect("students.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT name FROM students")
-            self.widgets.timer.student_names = [row[0] for row in cursor.fetchall()]
-            cursor.execute("SELECT seconds FROM students")
-            self.widgets.timer.individual_seconds = cursor.fetchall()[0][0]
+            try:
+                cursor.execute("SELECT name FROM students")
+                self.widgets.timer.student_names = [row[0] for row in cursor.fetchall()]
+                cursor.execute("SELECT seconds FROM students")
+                self.widgets.timer.individual_seconds = cursor.fetchall()[0][0]
+            except IndexError:
+                pass
 
     async def on_key(self, event):
         if self.receiving_text_input:
