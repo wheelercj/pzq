@@ -23,12 +23,13 @@ class TextInput(Widget):
 
 
 class Timer(Widget):
+    MEETING_MINUTES = 20
     TRANSITION_SECONDS = 30
-    MAX_INDIVIDUAL_SECONDS = 20 * 60 + TRANSITION_SECONDS
-    MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
+    MAX_INDIVIDUAL_SECONDS = MEETING_MINUTES * 60 + TRANSITION_SECONDS
+    MIN_EMPTY_WAITLIST_SECONDS = MEETING_MINUTES / 2 * 60
     individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
     group_seconds = 0  # counts up
-    MODES = ["group meeting", "20-minute individual meetings", "end"]
+    MODES = ["group meeting", f"{MEETING_MINUTES}-minute individual meetings", "end"]
     current_mode_index = 0
     student_names = []
     pause = True
@@ -40,7 +41,6 @@ class Timer(Widget):
 
     def save_all_students(self):
         with sqlite3.connect("students.db") as conn:
-            # delete everything in the table
             conn.execute("DELETE FROM students")
             cursor = conn.cursor()
             for name in self.student_names:
