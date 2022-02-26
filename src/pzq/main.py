@@ -28,7 +28,7 @@ class Timer(Widget):
     MIN_EMPTY_WAITLIST_SECONDS = 10 * 60
     individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
     group_seconds = 0  # counts up
-    MODES = ["group meeting", "20-minute individual meetings"]
+    MODES = ["group meeting", "20-minute individual meetings", "end"]
     current_mode_index = 0
     student_names = []
     pause = True
@@ -67,6 +67,11 @@ class Timer(Widget):
             chime.success()
         elif self.individual_seconds == 1:
             chime.info()
+        if self.current_mode_index == 2:
+            return Align.center(
+                "\n\n\n\n\n[u][b]wrapping up[/b][/u]"
+                "\nTutoring hours are ending soon. You can find the next time I will be tutoring on Penji. If you have questions before then, you can contact me at wheelecj@lavc.edu."
+            )
         if not self.student_names:
             self.group_seconds = 0
             return Align.center("\n\n\n\n\n(no students in queue)")
@@ -203,12 +208,15 @@ class TimerApp(App):
                 # randomize the order of the students in the queue
                 random.shuffle(self.widgets.timer.student_names)
             elif event.key == "m":
-                # toggle the queue mode
+                # toggle the queue mode between individual and group
                 self.widgets.timer.current_mode_index = int(
                     not self.widgets.timer.current_mode_index
                 )
                 if self.widgets.timer.current_mode_index == 1:
                     self.widgets.timer.group_seconds = 0
+            elif event.key == "end":
+                # change the queue mode to say that tutoring hours end soon
+                self.widgets.timer.current_mode_index = 2
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
