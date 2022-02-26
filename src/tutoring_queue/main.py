@@ -8,6 +8,7 @@ from textual.widgets import ScrollView
 from textwrap import dedent
 import random
 import chime  # https://pypi.org/project/chime/
+import sqlite3
 
 
 def format_time(seconds):
@@ -35,6 +36,19 @@ class Timer(Widget):
 
     def on_mount(self):
         self.set_interval(1, self.refresh)
+        self.set_interval(10, self.save_all_students)
+
+    def save_all_students(self):
+        with sqlite3.connect("students.db") as conn:
+            # delete everything in the table
+            conn.execute("DELETE FROM students")
+            cursor = conn.cursor()
+            for name in self.student_names:
+                cursor.execute(
+                    "INSERT INTO students (name, seconds) VALUES (?, ?)",
+                    (name, self.individual_seconds),
+                )
+            conn.commit()
 
     def render(self):
         if (
@@ -116,7 +130,29 @@ class TimerApp(App):
     widgets = TimerAppWidgets()
 
     async def on_mount(self):
+        try:
+            self.load_students()
+        except sqlite3.OperationalError:
+            with sqlite3.connect("students.db") as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    CREATE TABLE students (
+                        id INTEGER PRIMARY KEY,
+                        name TEXT NOT NULL,
+                        seconds INTEGER NOT NULL);
+                    """
+                )
+                conn.commit()
         await self.view.dock(self.widgets)
+
+    def load_students(self):
+        with sqlite3.connect("students.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT name FROM students")
+            self.widgets.timer.student_names = [row[0] for row in cursor.fetchall()]
+            cursor.execute("SELECT seconds FROM students")
+            self.widgets.timer.individual_seconds = cursor.fetchall()[0][0]
 
     async def on_key(self, event):
         if self.receiving_text_input:
