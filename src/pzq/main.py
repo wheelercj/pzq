@@ -36,7 +36,7 @@ class Timer(Widget):
 
     def on_mount(self):
         self.set_interval(1, self.refresh)
-        self.set_interval(10, self.save_all_students)
+        self.set_interval(3, self.save_all_students)
 
     def save_all_students(self):
         with sqlite3.connect("students.db") as conn:
