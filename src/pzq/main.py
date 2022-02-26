@@ -5,7 +5,6 @@ from textual.events import Key
 from textual.widget import Widget
 from textual.reactive import Reactive
 from textual.views import GridView
-from textual.widgets import ScrollView
 from textwrap import dedent
 import random
 import chime  # https://pypi.org/project/chime/
@@ -21,6 +20,21 @@ class TextInput(Widget):
 
     def render(self) -> Markdown:
         return Markdown(self.text)
+
+
+class Welcome(Widget):
+    DEFAULT_MESSAGE = dedent(
+        """\
+        \n\n\n\n
+        Welcome to the LAVC computer science tutoring! My name is Chris Wheeler, and I am a computer science student at CSUN and an alumnus of LAVC.
+
+        I might be in a breakout room right now, but I will be back soon. You can see your approximate wait time on the right.
+        """
+    )
+    message = Reactive(DEFAULT_MESSAGE)
+
+    def render(self) -> Align:
+        return Align.center(self.message)
 
 
 class Timer(Widget):
@@ -101,15 +115,9 @@ class Timer(Widget):
 
 
 class TimerAppWidgets(GridView):
+    welcome = Welcome()
     timer = Timer()
     text_input = TextInput()
-    WELCOME_MESSAGE = dedent(
-        """\
-        Welcome to the LAVC computer science tutoring! My name is Chris Wheeler, and I am a computer science student at CSUN and an alumnus of LAVC.
-
-        I might be in a breakout room right now, but I will be back soon. You can see your approximate wait time on the right.
-        """
-    )
 
     def on_mount(self) -> None:
         self.grid.set_gap(2, 1)
@@ -120,19 +128,20 @@ class TimerAppWidgets(GridView):
         self.grid.add_row("row", repeat=15)
         self.grid.add_areas(
             text_input="col1-start|col2-end,row15",
-            welcome_message="col1,row1-start|row14-end",
+            welcome="col1,row1-start|row14-end",
             timer="col2,row1-start|row14-end",
         )
 
         self.grid.place(
             text_input=self.text_input,
-            welcome_message=ScrollView(self.WELCOME_MESSAGE, gutter=(5, 5)),
+            welcome=self.welcome,
             timer=self.timer,
         )
 
 
 class TimerApp(App):
     receiving_text_input = False
+    displaying_help = False
     widgets = TimerAppWidgets()
 
     async def on_mount(self) -> None:
@@ -187,7 +196,29 @@ class TimerApp(App):
             elif len(event.key) == 1:
                 self.widgets.text_input.text += event.key
         else:
-            if event.key == "a":
+            if event.key == "h":
+                # toggle displaying keyboard shortcuts help
+                if self.displaying_help:
+                    self.displaying_help = False
+                    self.widgets.welcome.message = self.widgets.welcome.DEFAULT_MESSAGE
+                else:
+                    self.displaying_help = True
+                    self.widgets.welcome.message = (
+                        "[u][b]keyboard shortcuts:[/b][/u]"
+                        "\n[b][green]h[/green][/b] — toggles this help message"
+                        '\n[b][green]a[/green][/b] — changes your keyboard input mode to allow you to type a student\'s name. You will see [white]"name: "[/white] and what you type appear in the bottom-left corner. When you have finished typing their name, press [green]enter[/green] to add the student to the queue. You can also delete all of what you typed to cancel.'
+                        "\n[b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end."
+                        "\n[b][green]z[/green][/b] — undoes the previous [green]n[/green] keypress."
+                        "\n[b][green]![/green][/b] — removes the last student in the queue."
+                        "\n[b][green]$[/green][/b] — randomizes the order of the queue."
+                        "\n[b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings."
+                        "\n[b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end."
+                        "\n[b][green]k[/green][/b] — pauses/continues the individual meetings timer."
+                        "\n[b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer."
+                        "\n[b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer."
+                        "\n[b][green]r[/green][/b] — resets the individual meetings timer."
+                    )
+            elif event.key == "a":
                 # add a student to the queue
                 self.receiving_text_input = True
                 self.widgets.text_input.text = "name: "
@@ -201,6 +232,19 @@ class TimerApp(App):
                 )
                 self.widgets.timer.individual_seconds = (
                     self.widgets.timer.MAX_INDIVIDUAL_SECONDS
+                )
+            elif (
+                event.key == "z"
+                and self.widgets.timer.previous_individual_seconds is not None
+            ):
+                # return to the previous meeting
+                temp = self.widgets.timer.individual_seconds
+                self.widgets.timer.individual_seconds = (
+                    self.widgets.timer.previous_individual_seconds
+                )
+                self.widgets.timer.previous_individual_seconds = temp
+                self.widgets.timer.student_names.insert(
+                    0, self.widgets.timer.student_names.pop()
                 )
             elif event.key == "!":
                 # remove the student at the end of the queue
@@ -236,19 +280,6 @@ class TimerApp(App):
                     self.widgets.timer.MAX_INDIVIDUAL_SECONDS
                 )
                 self.widgets.timer.pause = True
-            elif (
-                event.key == "z"
-                and self.widgets.timer.previous_individual_seconds is not None
-            ):
-                # return to the previous meeting
-                temp = self.widgets.timer.individual_seconds
-                self.widgets.timer.individual_seconds = (
-                    self.widgets.timer.previous_individual_seconds
-                )
-                self.widgets.timer.previous_individual_seconds = temp
-                self.widgets.timer.student_names.insert(
-                    0, self.widgets.timer.student_names.pop()
-                )
 
 
 TimerApp.run(log="textual.log")
