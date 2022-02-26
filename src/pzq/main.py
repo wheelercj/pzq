@@ -81,15 +81,15 @@ class Timer(Widget):
             )
             if self.current_mode_index == 0:
                 timer_message += f"       [bright_black]{format_time(self.group_seconds)}[/bright_black]"
-            timer_message += (
-                "\n\n[u][b]meeting in progress with:[/b][/u]"
-                f"\n{self.student_names[0]}"
-            )
+            timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
+            if self.current_mode_index == 1 and len(self.student_names) == 1:
+                timer_message += f"[bright_black]{format_time(self.individual_seconds)}[/bright_black] "
+            timer_message += f"{self.student_names[0]}"
             if len(self.student_names) > 1:
                 if self.current_mode_index == 0:
                     for i, name in enumerate(self.student_names[1:]):
                         timer_message += f"\n{name}"
-                else:
+                elif self.current_mode_index == 1:
                     timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
                     for i, name in enumerate(self.student_names[1:]):
                         next_seconds = self.individual_seconds + (
