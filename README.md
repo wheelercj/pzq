@@ -1,8 +1,8 @@
-# pzq
+# zq
 
-Easy peasy queue for tutors using Penji and Zoom with two devices.
+Easy Zoom queueing for tutors (and others!) using breakout rooms and two devices.
 
-Since Penji's queue can be somewhat confusing and isolating for students waiting for help, this queueing app makes it easy to immediately admit all students into Zoom from Penji, where they will see more detailed info with a welcome message and approximate wait times. pzq only runs locally, so the user's screen must stay shared even when they are helping a student in a breakout room (they must use a second device). Student info is saved regularly, so the application can easily be restarted if needed.
+Some meeting waitlists are confusing and isolating for students waiting for help, but this queueing app makes it easy to immediately bring all students into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared even when they are helping a student in a breakout room (they must use a second device). Names and wait times are saved regularly, so the app can be restarted any time if needed.
 
 ![demo](docs/demo1.png)
 
