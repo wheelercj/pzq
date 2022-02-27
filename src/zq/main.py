@@ -85,7 +85,7 @@ class Timer(Widget):
         if self.current_mode_index == 2:
             return Align.center(
                 "\n\n\n\n\n[u][b]wrapping up[/b][/u]"
-                "\nTutoring hours are ending soon. You can find the next time I will be tutoring on Penji. If you have questions before then, you can contact me at wheelecj@lavc.edu."
+                "\nTutoring hours are now ending. You can find the next time I will be tutoring on Penji. If you have questions before then, you can contact me at wheelecj@lavc.edu"
             )
         if not self.student_names:
             self.group_seconds = 0
@@ -120,8 +120,8 @@ class TimerAppWidgets(GridView):
     text_input = TextInput()
 
     def on_mount(self) -> None:
-        self.grid.set_gap(2, 1)
-        self.grid.set_gutter(1)
+        self.grid.set_gap(8, 1)
+        self.grid.set_gutter(3)
         self.grid.set_align("center", "center")
 
         self.grid.add_column("col", repeat=2)
