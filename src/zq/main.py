@@ -224,7 +224,7 @@ class TimerApp(App):
                 # add a student to the queue
                 self.receiving_text_input = True
                 self.widgets.text_input.text = "name: "
-            elif event.key == "n":
+            elif event.key == "n" and len(self.widgets.timer.student_names) > 1:
                 # go to the next student in queue
                 self.widgets.timer.student_names.append(
                     self.widgets.timer.student_names.pop(0)
