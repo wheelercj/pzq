@@ -9,6 +9,7 @@ from textwrap import dedent
 import random
 import chime  # https://pypi.org/project/chime/
 import sqlite3
+import settings  # internal import
 
 
 def format_time(seconds: int) -> str:
@@ -23,28 +24,22 @@ class TextInput(Widget):
 
 
 class Welcome(Widget):
-    DEFAULT_MESSAGE = dedent(
-        """\
-        \n\n\n\n
-        Welcome to the LAVC computer science tutoring! My name is Chris Wheeler, and I am a computer science student at CSUN and an alumnus of LAVC.
-
-        I might be in a breakout room right now, but I will be back soon. You can see your approximate wait time on the right.
-        """
-    )
-    message = Reactive(DEFAULT_MESSAGE)
+    message = Reactive(settings.EMPTY_LINES_ABOVE * "\n" + settings.WELCOME_MESSAGE)
 
     def render(self) -> Align:
         return Align.center(self.message)
 
 
 class Timer(Widget):
-    MEETING_MINUTES = 20
-    TRANSITION_SECONDS = 30
-    MAX_INDIVIDUAL_SECONDS = MEETING_MINUTES * 60 + TRANSITION_SECONDS
-    MIN_EMPTY_WAITLIST_SECONDS = MEETING_MINUTES / 2 * 60
+    MAX_INDIVIDUAL_SECONDS = settings.MEETING_MINUTES * 60 + settings.TRANSITION_SECONDS
+    MIN_EMPTY_WAITLIST_SECONDS = settings.MEETING_MINUTES / 2 * 60
     individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
     group_seconds = 0  # counts up
-    MODES = ["group meeting", f"{MEETING_MINUTES}-minute individual meetings", "end"]
+    MODES = [
+        "group meeting",
+        f"{settings.MEETING_MINUTES}-minute individual meetings",
+        "end",
+    ]
     current_mode_index = 0
     student_names = []
     pause = True
@@ -52,7 +47,7 @@ class Timer(Widget):
 
     def on_mount(self) -> None:
         self.set_interval(1, self.refresh)
-        self.set_interval(3, self.save_all_students)
+        self.set_interval(settings.SAVE_INTERVAL_SECONDS, self.save_all_students)
 
     def save_all_students(self) -> None:
         with sqlite3.connect("students.db") as conn:
@@ -78,18 +73,19 @@ class Timer(Widget):
             self.individual_seconds -= 1
         if self.current_mode_index == 0 and self.student_names:
             self.group_seconds += 1
-        if self.individual_seconds == self.TRANSITION_SECONDS:
+        if self.individual_seconds == settings.TRANSITION_SECONDS:
             chime.success()
         elif self.individual_seconds == 1:
             chime.info()
         if self.current_mode_index == 2:
             return Align.center(
-                "\n\n\n\n\n[u][b]wrapping up[/b][/u]"
-                "\nTutoring hours are now ending. You can find the next time I will be tutoring on Penji. If you have questions before then, you can contact me at wheelecj@lavc.edu"
+                settings.EMPTY_LINES_ABOVE * "\n" + settings.ENDING_MESSAGE
             )
         if not self.student_names:
             self.group_seconds = 0
-            return Align.center("\n\n\n\n\n(no students in queue)")
+            return Align.center(
+                settings.EMPTY_LINES_ABOVE * "\n" + "\n(no students in queue)"
+            )
         else:
             timer_message = (
                 f"[bright_black]{self.MODES[self.current_mode_index]}[/bright_black]"
@@ -111,7 +107,9 @@ class Timer(Widget):
                             i * self.MAX_INDIVIDUAL_SECONDS
                         )
                         timer_message += f"{format_time(next_seconds)} {name}\n\n"
-            return Align.center("\n\n\n\n\n" + timer_message)
+            return Align.center(
+                settings.EMPTY_LINES_ABOVE * "\n" + "\n" + timer_message
+            )
 
 
 class TimerAppWidgets(GridView):
@@ -200,23 +198,27 @@ class TimerApp(App):
                 # toggle displaying keyboard shortcuts help
                 if self.displaying_help:
                     self.displaying_help = False
-                    self.widgets.welcome.message = self.widgets.welcome.DEFAULT_MESSAGE
+                    self.widgets.welcome.message = (
+                        settings.EMPTY_LINES_ABOVE * "\n" + settings.WELCOME_MESSAGE
+                    )
                 else:
                     self.displaying_help = True
-                    self.widgets.welcome.message = (
-                        "[u][b]keyboard shortcuts:[/b][/u]"
-                        "\n[b][green]h[/green][/b] — toggles this help message"
-                        '\n[b][green]a[/green][/b] — changes your keyboard input mode to allow you to type a student\'s name. You will see [white]"name: "[/white] and what you type appear in the bottom-left corner. When you have finished typing their name, press [green]enter[/green] to add the student to the queue. You can also delete all of what you typed to cancel.'
-                        "\n[b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end."
-                        "\n[b][green]z[/green][/b] — undoes the previous [green]n[/green] keypress."
-                        "\n[b][green]![/green][/b] — removes the last student in the queue."
-                        "\n[b][green]$[/green][/b] — randomizes the order of the queue."
-                        "\n[b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings."
-                        "\n[b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end."
-                        "\n[b][green]k[/green][/b] — pauses/continues the individual meetings timer."
-                        "\n[b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer."
-                        "\n[b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer."
-                        "\n[b][green]r[/green][/b] — resets the individual meetings timer."
+                    self.widgets.welcome.message = dedent(
+                        """\
+                        [u][b]keyboard shortcuts:[/b][/u]
+                        [b][green]h[/green][/b] — toggles this help message
+                        [b][green]a[/green][/b] — changes your keyboard input mode to allow you to type a student's name. You will see [white]"name: "[/white] and what you type appear in the bottom-left corner. When you have finished typing their name, press [green]enter[/green] to add the student to the queue. You can also delete all of what you typed to cancel.
+                        [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
+                        [b][green]z[/green][/b] — undoes the previous [green]n[/green] keypress.
+                        [b][green]![/green][/b] — removes the last student in the queue.
+                        [b][green]$[/green][/b] — randomizes the order of the queue.
+                        [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
+                        [b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
+                        [b][green]k[/green][/b] — pauses/continues the individual meetings timer.
+                        [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
+                        [b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer.
+                        [b][green]r[/green][/b] — resets the individual meetings timer.
+                        """
                     )
             elif event.key == "a":
                 # add a student to the queue
