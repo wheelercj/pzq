@@ -9,21 +9,11 @@ from textwrap import dedent
 import random
 import chime  # https://pypi.org/project/chime/
 import sqlite3
-import subprocess
-import webbrowser
 import settings  # internal import
 
 
 def main():
-    open_other_apps()
     TimerApp.run(log="textual.log")
-
-
-def open_other_apps():
-    for path in settings.STARTUP_APP_PATHS:
-        subprocess.run([path])
-    for url in settings.STARTUP_URLS:
-        webbrowser.open(url, new=2)
 
 
 def format_time(seconds: int) -> str:

@@ -18,9 +18,3 @@ ENDING_MESSAGE = dedent(
     Tutoring hours are now ending. You can find the next time I will be tutoring on Penji. If you have questions before then, you can contact me at wheelecj@lavc.edu
     """
 )
-STARTUP_APP_PATHS = [
-    # The absolute paths to the executables of other apps that should be opened when this app is opened.
-    "C:/Users/chris/AppData/Roaming/Zoom/bin/Zoom.exe",
-    "C:/Users/chris/AppData/Local/Microsoft/Teams/current/Teams.exe",
-]
-STARTUP_URLS = ["https://en.wikipedia.org/wiki/Special:Random"]  # The URLs to open when this app is opened.
