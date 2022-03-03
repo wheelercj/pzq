@@ -265,6 +265,10 @@ class TimerApp(App):
             elif event.key == "!":
                 # remove the student at the end of the queue
                 self.widgets.timer.student_names.pop()
+                if len(self.widgets.timer.student_names) == 1:
+                    self.widgets.timer.individual_seconds = (
+                        self.widgets.timer.MAX_INDIVIDUAL_SECONDS
+                    )
             elif event.key == "$":
                 # randomize the order of the students in the queue
                 random.shuffle(self.widgets.timer.student_names)
