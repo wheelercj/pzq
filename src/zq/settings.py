@@ -25,6 +25,11 @@ __DEFAULT_SETTINGS = {
         your approximate wait time on the right.
         """
     ),
+    "starting message": format_setting_string(
+        """\
+        [b]Starting soon![/b]
+        """
+    ),
     "ending message": format_setting_string(
         """\
         [u][b]wrapping up[/b][/u]

@@ -46,6 +46,7 @@ class Timer(Widget):
     MODES = [
         "group meeting",
         f"{settings['meeting minutes']}-minute individual meetings",
+        "start",
         "end",
     ]
     current_mode_index = 0
@@ -86,6 +87,10 @@ class Timer(Widget):
         elif self.individual_seconds == 1:
             chime.info()
         if self.current_mode_index == 2:
+            return Align.center(
+                settings["empty lines above"] * "\n" + settings["starting message"]
+            )
+        if self.current_mode_index == 3:
             return Align.center(
                 settings["empty lines above"] * "\n" + settings["ending message"]
             )
@@ -222,6 +227,7 @@ class TimerApp(App):
                         [b][green]![/green][/b] — removes the last student in the queue.
                         [b][green]$[/green][/b] — randomizes the order of the queue.
                         [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
+                        [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
                         [b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
                         [b][green]k[/green][/b] — pauses/continues the individual meetings timer.
                         [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
@@ -275,9 +281,12 @@ class TimerApp(App):
                 )
                 if self.widgets.timer.current_mode_index == 1:
                     self.widgets.timer.group_seconds = 0
+            elif event.key == "home":
+                # change the queue mode to say that tutoring hours start soon
+                self.widgets.timer.current_mode_index = 2
             elif event.key == "end":
                 # change the queue mode to say that tutoring hours end soon
-                self.widgets.timer.current_mode_index = 2
+                self.widgets.timer.current_mode_index = 3
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause

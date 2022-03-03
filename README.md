@@ -15,6 +15,7 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `!` removes the last student in the queue.
 * `$` randomizes the order of the queue.
 * `m` toggles the meeting mode between group and individual meetings.
+* `home` changes the meeting mode to display a message saying tutoring hours will start soon.
 * `end` changes the meeting mode to display a message saying tutoring hours will soon end.
 * `k` pauses/continues the individual meetings timer.
 * `j` adds 5 seconds to the individual meetings timer.
