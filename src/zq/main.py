@@ -9,7 +9,17 @@ from textwrap import dedent
 import random
 import chime  # https://pypi.org/project/chime/
 import sqlite3
+from enum import Enum
 from settings import settings  # internal import
+
+
+class Mode(Enum):
+    """Meeting modes."""
+
+    GROUP = 0
+    INDIVIDUAL = 1
+    START = 2
+    END = 3
 
 
 def main():
@@ -43,13 +53,13 @@ class Timer(Widget):
     MIN_EMPTY_WAITLIST_SECONDS = settings["meeting minutes"] / 2 * 60
     individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
     group_seconds = 0  # counts up
-    MODES = [
+    MODES_NAMES = [
         "group meeting",
         f"{settings['meeting minutes']}-minute individual meetings",
         "start",
         "end",
     ]
-    current_mode_index = 0
+    current_mode = Mode.GROUP
     student_names = []
     pause = True
     previous_individual_seconds = None
@@ -75,22 +85,22 @@ class Timer(Widget):
             and self.individual_seconds
             and not self.pause
             and (
-                (self.current_mode_index == 1 and len(self.student_names) > 1)
+                (self.current_mode == Mode.INDIVIDUAL and len(self.student_names) > 1)
                 or self.individual_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
             )
         ):
             self.individual_seconds -= 1
-        if self.current_mode_index == 0 and self.student_names:
+        if self.current_mode == Mode.GROUP and self.student_names:
             self.group_seconds += 1
         if self.individual_seconds == settings["transition seconds"]:
             chime.success()
         elif self.individual_seconds == 1:
             chime.info()
-        if self.current_mode_index == 2:
+        if self.current_mode == Mode.START:
             return Align.center(
                 settings["empty lines above"] * "\n" + settings["starting message"]
             )
-        if self.current_mode_index == 3:
+        if self.current_mode == Mode.END:
             return Align.center(
                 settings["empty lines above"] * "\n" + settings["ending message"]
             )
@@ -100,20 +110,18 @@ class Timer(Widget):
                 settings["empty lines above"] * "\n" + "\n(no students in queue)"
             )
         else:
-            timer_message = (
-                f"[bright_black]{self.MODES[self.current_mode_index]}[/bright_black]"
-            )
-            if self.current_mode_index == 0:
+            timer_message = f"[bright_black]{self.MODES_NAMES[self.current_mode.value]}[/bright_black]"
+            if self.current_mode == Mode.GROUP:
                 timer_message += f"       [bright_black]{format_time(self.group_seconds)}[/bright_black]"
             timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
-            if self.current_mode_index == 1 and len(self.student_names) == 1:
+            if self.current_mode == Mode.INDIVIDUAL and len(self.student_names) == 1:
                 timer_message += f"[bright_black]{format_time(self.individual_seconds)}[/bright_black] "
             timer_message += f"{self.student_names[0]}"
             if len(self.student_names) > 1:
-                if self.current_mode_index == 0:
+                if self.current_mode == Mode.GROUP:
                     for i, name in enumerate(self.student_names[1:]):
                         timer_message += f"\n{name}"
-                elif self.current_mode_index == 1:
+                elif self.current_mode == Mode.INDIVIDUAL:
                     timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
                     for i, name in enumerate(self.student_names[1:]):
                         next_seconds = self.individual_seconds + (
@@ -275,18 +283,17 @@ class TimerApp(App):
                 # randomize the order of the students in the queue
                 random.shuffle(self.widgets.timer.student_names)
             elif event.key == "m":
-                # toggle the queue mode between individual and group
-                self.widgets.timer.current_mode_index = int(
-                    not self.widgets.timer.current_mode_index
-                )
-                if self.widgets.timer.current_mode_index == 1:
+                if self.widgets.timer.current_mode == Mode.GROUP:
+                    self.widgets.timer.current_mode = Mode.INDIVIDUAL
+                else:
+                    self.widgets.timer.current_mode = Mode.GROUP
                     self.widgets.timer.group_seconds = 0
             elif event.key == "home":
                 # change the queue mode to say that tutoring hours start soon
-                self.widgets.timer.current_mode_index = 2
+                self.widgets.timer.current_mode = Mode.START
             elif event.key == "end":
                 # change the queue mode to say that tutoring hours end soon
-                self.widgets.timer.current_mode_index = 3
+                self.widgets.timer.current_mode = Mode.END
             elif event.key == "k":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
