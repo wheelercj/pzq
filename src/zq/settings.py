@@ -49,10 +49,13 @@ def load_settings() -> None:
     try:
         with open("settings.yaml", "r") as file:
             settings.update(yaml.load(file, Loader=yaml.FullLoader))
-    except (Exception):
-        print("Could not load settings.yaml. Using default settings.")
+    except (FileNotFoundError):
+        print("Could not find settings.yaml. Creating the file with defaults.")
         settings.update(__DEFAULT_SETTINGS)
         save_settings()
+    except (yaml.YAMLError):
+        print("Could not parse settings.yaml. Using default settings.")
+        settings.update(__DEFAULT_SETTINGS)
 
 
 load_settings()
