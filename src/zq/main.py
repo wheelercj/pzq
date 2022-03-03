@@ -199,10 +199,7 @@ class TimerApp(App):
                 self.widgets.text_input.text = ""
                 if name:
                     if name in self.widgets.timer.student_names:
-                        if not name.endswith(" II"):
-                            name += " II"
-                        else:
-                            name += "I"
+                        name += " II"
                     self.widgets.timer.student_names.append(name)
                     if len(self.widgets.timer.student_names) == 1:
                         self.widgets.timer.pause = False
