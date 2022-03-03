@@ -53,7 +53,7 @@ class Timer(Widget):
     MIN_EMPTY_WAITLIST_SECONDS = settings["meeting minutes"] / 2 * 60
     individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
     group_seconds = 0  # counts up
-    MODES_NAMES = [
+    MODE_NAMES = [
         "group meeting",
         f"{settings['meeting minutes']}-minute individual meetings",
         "start",
@@ -110,7 +110,7 @@ class Timer(Widget):
                 settings["empty lines above"] * "\n" + "\n(no students in queue)"
             )
         else:
-            timer_message = f"[bright_black]{self.MODES_NAMES[self.current_mode.value]}[/bright_black]"
+            timer_message = f"[bright_black]{self.MODE_NAMES[self.current_mode.value]}[/bright_black]"
             if self.current_mode == Mode.GROUP:
                 timer_message += f"       [bright_black]{format_time(self.group_seconds)}[/bright_black]"
             timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
