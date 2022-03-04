@@ -17,8 +17,11 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `m` toggles the meeting mode between group and individual meetings.
 * `home` changes the meeting mode to display a message saying tutoring hours will start soon.
 * `end` changes the meeting mode to display a message saying tutoring hours will soon end.
-* `k` pauses/continues the individual meetings timer.
+* `k` pauses/unpauses the individual meetings timer.
+* `space` pauses/unpauses the individual meetings timer.
 * `j` adds 5 seconds to the individual meetings timer.
 * `l` subtracts 5 seconds from the individual meetings timer.
+* `up` adds 30 secodns to the individual meetings timer.
+* `down` subtracts 30 secodns from the individual meetings timer.
 * `r` resets the individual meetings timer.
 * `s` saves student info; for if you have autosave disabled.

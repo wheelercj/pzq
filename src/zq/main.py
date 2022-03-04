@@ -269,9 +269,12 @@ class TimerApp(App):
                         [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
                         [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
                         [b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
-                        [b][green]k[/green][/b] — pauses/continues the individual meetings timer.
+                        [b][green]k[/green][/b] — pauses/unpauses the individual meetings timer.
+                        [b][green]space[/green][/b] — pauses/unpauses the individual meetings timer.
                         [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
                         [b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer.
+                        [b][green]up[/green][/b] — adds [white]30[/white] seconds to the individual meetings timer.
+                        [b][green]down[/green][/b] — subtracts [white]30[/white] seconds from the individual meetings timer.
                         [b][green]r[/green][/b] — resets the individual meetings timer.
                         [b][green]s[/green][/b] — saves student info; for if you have autosave disabled.
                         """
@@ -327,7 +330,7 @@ class TimerApp(App):
             elif event.key == "end":
                 # change the queue mode to say that tutoring hours end soon
                 self.widgets.timer.current_mode = Mode.END
-            elif event.key == "k":
+            elif event.key == "k" or event.key == " ":
                 # pause the timers
                 self.widgets.timer.pause = not self.widgets.timer.pause
             elif event.key == "j":
@@ -337,6 +340,15 @@ class TimerApp(App):
                 # subtract up to 5 seconds from the current meeting
                 if self.widgets.timer.individual_seconds >= 5:
                     self.widgets.timer.individual_seconds -= 5
+                else:
+                    self.widgets.timer.individual_seconds = 0
+            elif event.key == "up":
+                # add 30 seconds to the current meeting
+                self.widgets.timer.individual_seconds += 30
+            elif event.key == "down":
+                # subtract up to 30 seconds from the current meeting
+                if self.widgets.timer.individual_seconds >= 30:
+                    self.widgets.timer.individual_seconds -= 30
                 else:
                     self.widgets.timer.individual_seconds = 0
             elif event.key == "r":
