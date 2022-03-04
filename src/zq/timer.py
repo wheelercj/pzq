@@ -55,6 +55,24 @@ class Timer(Widget):
             conn.commit()
 
     def render(self) -> Align:
+        self.tick()
+        if self.current_mode == Mode.START:
+            return Align.center(
+                settings["empty lines above"] * "\n" + settings["starting message"]
+            )
+        if self.current_mode == Mode.END:
+            return Align.center(
+                settings["empty lines above"] * "\n" + settings["ending message"]
+            )
+        if not self.student_names:
+            self.group_seconds = 0
+            return Align.center(
+                settings["empty lines above"] * "\n" + "\n(no students in queue)"
+            )
+        timer_message = self.get_timer_message()
+        return Align.center(settings["empty lines above"] * "\n" + "\n" + timer_message)
+
+    def tick(self) -> None:
         if (
             self.student_names
             and self.individual_seconds
@@ -72,20 +90,7 @@ class Timer(Widget):
         elif self.individual_seconds == 1:
             chime.info()
 
-        if self.current_mode == Mode.START:
-            return Align.center(
-                settings["empty lines above"] * "\n" + settings["starting message"]
-            )
-        if self.current_mode == Mode.END:
-            return Align.center(
-                settings["empty lines above"] * "\n" + settings["ending message"]
-            )
-        if not self.student_names:
-            self.group_seconds = 0
-            return Align.center(
-                settings["empty lines above"] * "\n" + "\n(no students in queue)"
-            )
-
+    def get_timer_message(self) -> str:
         timer_message = (
             f"[bright_black]{self.MODE_NAMES[self.current_mode.value]}[/bright_black]"
         )
@@ -110,4 +115,4 @@ class Timer(Widget):
                         i * self.max_individual_seconds
                     )
                     timer_message += f"{format_time(next_seconds)} {name}\n\n"
-        return Align.center(settings["empty lines above"] * "\n" + "\n" + timer_message)
+        return timer_message
