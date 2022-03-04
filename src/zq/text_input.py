@@ -21,8 +21,8 @@ class TextInput:
             Whether text input is still being received.
         str, None
             The text input without surrounding whitespace characters. This is None if
-            text input is still being received. If the user cancels text input by
-            pressing backspace, this is an empty string.
+            text input is still being received. If the user cancels text input with
+            backspace, this is an empty string.
         """
         if field_label and not self.text:
             self.text = field_label
