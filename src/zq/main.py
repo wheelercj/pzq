@@ -91,11 +91,11 @@ class Welcome(Widget):
 
 
 class Timer(Widget):
-    MAX_INDIVIDUAL_SECONDS = (
+    max_individual_seconds = (
         settings["meeting minutes"] * 60 + settings["transition seconds"]
     )
-    MIN_EMPTY_WAITLIST_SECONDS = settings["meeting minutes"] / 2 * 60
-    individual_seconds = MAX_INDIVIDUAL_SECONDS  # counts down
+    min_empty_waitlist_seconds = settings["meeting minutes"] / 2 * 60
+    individual_seconds = max_individual_seconds  # counts down
     group_seconds = 0  # counts up
     MODE_NAMES = [
         "group meeting",
@@ -130,7 +130,7 @@ class Timer(Widget):
             and not self.pause
             and (
                 (self.current_mode == Mode.INDIVIDUAL and len(self.student_names) > 1)
-                or self.individual_seconds > self.MIN_EMPTY_WAITLIST_SECONDS
+                or self.individual_seconds > self.min_empty_waitlist_seconds
             )
         ):
             self.individual_seconds -= 1
@@ -169,7 +169,7 @@ class Timer(Widget):
                     timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
                     for i, name in enumerate(self.student_names[1:]):
                         next_seconds = self.individual_seconds + (
-                            i * self.MAX_INDIVIDUAL_SECONDS
+                            i * self.max_individual_seconds
                         )
                         timer_message += f"{format_time(next_seconds)} {name}\n\n"
             return Align.center(
@@ -254,10 +254,10 @@ class TimerApp(App):
             self.widgets.text_input_field.text = self.text_input.text
             if minutes and minutes.isdigit() and int(minutes) > 0:
                 settings["meeting minutes"] = int(minutes)
-                self.widgets.timer.MAX_INDIVIDUAL_SECONDS = (
+                self.widgets.timer.max_individual_seconds = (
                     settings["meeting minutes"] * 60 + settings["transition seconds"]
                 )
-                self.widgets.timer.MIN_EMPTY_WAITLIST_SECONDS = (
+                self.widgets.timer.min_empty_waitlist_seconds = (
                     settings["meeting minutes"] / 2 * 60
                 )
                 save_settings()
@@ -308,7 +308,7 @@ class TimerApp(App):
                     self.widgets.timer.individual_seconds
                 )
                 self.widgets.timer.individual_seconds = (
-                    self.widgets.timer.MAX_INDIVIDUAL_SECONDS
+                    self.widgets.timer.max_individual_seconds
                 )
             elif (
                 event.key == "z"
@@ -329,7 +329,7 @@ class TimerApp(App):
                     self.widgets.timer.student_names.pop()
                 if len(self.widgets.timer.student_names) == 1:
                     self.widgets.timer.individual_seconds = (
-                        self.widgets.timer.MAX_INDIVIDUAL_SECONDS
+                        self.widgets.timer.max_individual_seconds
                     )
             elif event.key == "$":
                 # randomize the order of the students in the queue
@@ -370,7 +370,7 @@ class TimerApp(App):
             elif event.key == "r":
                 # reset the timer
                 self.widgets.timer.individual_seconds = (
-                    self.widgets.timer.MAX_INDIVIDUAL_SECONDS
+                    self.widgets.timer.max_individual_seconds
                 )
                 self.widgets.timer.pause = True
             elif event.key == "d":
