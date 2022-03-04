@@ -11,7 +11,7 @@ from typing import Callable
 import chime  # https://pypi.org/project/chime/
 import sqlite3
 from enum import Enum
-from settings import settings  # internal import
+from settings import settings, save_settings  # internal import
 
 
 class Mode(Enum):
@@ -203,10 +203,11 @@ class TimerAppWidgets(GridView):
 
 
 class TimerApp(App):
-    receiving_text_input = False
+    receiving_name_input = False
+    receiving_minutes_input = False
+    text_input = TextInput()
     displaying_help = False
     widgets = TimerAppWidgets()
-    name_input = TextInput()
 
     async def on_mount(self) -> None:
         try:
@@ -237,15 +238,29 @@ class TimerApp(App):
                 pass
 
     async def on_key(self, event: Key) -> None:
-        if self.receiving_text_input:
-            self.receiving_text_input, name = self.name_input(event.key, "name: ")
-            self.widgets.text_input_field.text = self.name_input.text
+        if self.receiving_name_input:
+            self.receiving_name_input, name = self.text_input(event.key, "name: ")
+            self.widgets.text_input_field.text = self.text_input.text
             if name:
                 if name in self.widgets.timer.student_names:
                     name += " II"
                 self.widgets.timer.student_names.append(name)
                 if len(self.widgets.timer.student_names) == 1:
                     self.widgets.timer.pause = False
+        elif self.receiving_minutes_input:
+            self.receiving_minutes_input, minutes = self.text_input(
+                event.key, "minutes: "
+            )
+            self.widgets.text_input_field.text = self.text_input.text
+            if minutes and minutes.isdigit() and int(minutes) > 0:
+                settings["meeting minutes"] = int(minutes)
+                self.widgets.timer.MAX_INDIVIDUAL_SECONDS = (
+                    settings["meeting minutes"] * 60 + settings["transition seconds"]
+                )
+                self.widgets.timer.MIN_EMPTY_WAITLIST_SECONDS = (
+                    settings["meeting minutes"] / 2 * 60
+                )
+                save_settings()
         else:
             if event.key == "h":
                 # toggle displaying keyboard shortcuts help
@@ -276,12 +291,13 @@ class TimerApp(App):
                         [b][green]up[/green][/b] — adds [white]30[/white] seconds to the individual meetings timer.
                         [b][green]down[/green][/b] — subtracts [white]30[/white] seconds from the individual meetings timer.
                         [b][green]r[/green][/b] — resets the individual meetings timer.
+                        [b][green]d[/green][/b] — allows you to change the individual meetings duration (in minutes).
                         [b][green]s[/green][/b] — saves student info; for if you have autosave disabled.
                         """
                     )
             elif event.key == "a":
                 # add a student to the queue
-                self.receiving_text_input = True
+                self.receiving_name_input = True
                 self.widgets.text_input_field.text = "name: "
             elif event.key == "n" and len(self.widgets.timer.student_names) > 1:
                 # go to the next student in queue
@@ -357,6 +373,10 @@ class TimerApp(App):
                     self.widgets.timer.MAX_INDIVIDUAL_SECONDS
                 )
                 self.widgets.timer.pause = True
+            elif event.key == "d":
+                # change the individual meetings duration (in minutes)
+                self.receiving_minutes_input = True
+                self.widgets.text_input_field.text = "minutes: "
             elif event.key == "s":
                 self.widgets.timer.save_all_students()
 

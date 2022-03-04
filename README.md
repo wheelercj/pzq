@@ -24,4 +24,5 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `up` adds 30 secodns to the individual meetings timer.
 * `down` subtracts 30 secodns from the individual meetings timer.
 * `r` resets the individual meetings timer.
+* `d` allows you to change the individual meetings duration (in minutes).
 * `s` saves student info; for if you have autosave disabled.
