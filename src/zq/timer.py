@@ -28,7 +28,7 @@ class Timer(Widget):
     min_empty_waitlist_seconds = settings["meeting minutes"] / 2 * 60
     individual_seconds = max_individual_seconds  # counts down
     group_seconds = 0  # counts up
-    MODE_NAMES = [
+    mode_names = [
         "group meeting",
         f"{settings['meeting minutes']}-minute individual meetings",
         "start",
@@ -92,7 +92,7 @@ class Timer(Widget):
 
     def get_timer_message(self) -> str:
         timer_message = (
-            f"[bright_black]{self.MODE_NAMES[self.current_mode.value]}[/bright_black]"
+            f"[bright_black]{self.mode_names[self.current_mode.value]}[/bright_black]"
         )
         if self.current_mode == Mode.GROUP:
             timer_message += (

@@ -67,13 +67,15 @@ class TimerApp(App):
         self.receiving_minutes_input, minutes = self.text_input(key, "minutes: ")
         self.widgets.text_input_field.text = self.text_input.text
         if minutes and minutes.isdigit() and int(minutes) > 0:
-            settings["meeting minutes"] = int(minutes)
+            minutes = int(minutes)
+            settings["meeting minutes"] = minutes
             self.widgets.timer.max_individual_seconds = (
-                settings["meeting minutes"] * 60 + settings["transition seconds"]
+                minutes * 60 + settings["transition seconds"]
             )
-            self.widgets.timer.min_empty_waitlist_seconds = (
-                settings["meeting minutes"] / 2 * 60
-            )
+            self.widgets.timer.min_empty_waitlist_seconds = minutes / 2 * 60
+            self.widgets.timer.mode_names[
+                Mode.INDIVIDUAL.value
+            ] = f"{minutes}-minute individual meetings"
             save_settings()
 
     async def on_key(self, event: Key) -> None:
