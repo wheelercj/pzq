@@ -8,8 +8,8 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 
 ## keyboard shortcuts
 
-* `h` toggles keyboard shortcut help
-* `a` allows you to enter a student's name to add then to the queue.
+* `h` toggles keyboard shortcut help.
+* `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.
 * `z` undoes the previous `n` keypress.
 * `!` removes the last student in the queue.

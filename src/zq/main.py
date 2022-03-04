@@ -275,8 +275,8 @@ class TimerApp(App):
                     self.widgets.welcome.message = dedent(
                         """\
                         [u][b]keyboard shortcuts:[/b][/u]
-                        [b][green]h[/green][/b] — toggles this help message
-                        [b][green]a[/green][/b] — allows you to enter a student's name to add then to the queue.
+                        [b][green]h[/green][/b] — toggles this help message.
+                        [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
                         [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
                         [b][green]z[/green][/b] — undoes the previous [green]n[/green] keypress.
                         [b][green]![/green][/b] — removes the last student in the queue.
