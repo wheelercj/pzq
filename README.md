@@ -26,3 +26,8 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `r` resets the individual meetings timer.
 * `d` allows you to change the individual meetings duration (in minutes).
 * `s` saves student info; for if you have autosave disabled.
+
+## third-party dependencies
+* [Textual](https://github.com/Textualize/textual) for the text user interface
+* [Rich](https://github.com/Textualize/rich), which is used by Textual
+* [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
