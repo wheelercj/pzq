@@ -7,6 +7,7 @@ from textual.reactive import Reactive
 from textual.views import GridView
 from textwrap import dedent
 import random
+from typing import Callable
 import chime  # https://pypi.org/project/chime/
 import sqlite3
 from enum import Enum
@@ -30,7 +31,50 @@ def format_time(seconds: int) -> str:
     return f"{seconds // 60}:{seconds % 60:02}"
 
 
-class TextInput(Widget):
+class TextInput:
+    def __init__(self) -> Callable:
+        self.text = ""
+
+    def __call__(self, key: str, field_label: str = None) -> tuple[bool, str]:
+        """Gets text input from the user one key at a time.
+
+        Parameters
+        ----------
+        key : str
+            The key pressed.
+        field_label : str, None
+            Any text that must appear at the front of the text input field.
+
+        Returns
+        -------
+        bool
+            Whether text input is still being received.
+        str, None
+            The text input without surrounding whitespace characters. This is None if
+            text input is still being received. If the user cancels text input by
+            pressing backspace, this is an empty string.
+        """
+        if field_label and not self.text:
+            self.text = field_label
+        if key == "enter":
+            if field_label:
+                self.text = self.text[len(field_label) :]
+            result = self.text.strip()
+            self.text = ""
+            return False, result
+        elif key == "ctrl+h":  # backspace
+            start_index = len(field_label) if field_label else 0
+            if len(self.text) > start_index:
+                self.text = self.text[:-1]
+            else:
+                self.text = ""
+                return False, ""
+        elif len(key) == 1:
+            self.text += key
+        return True, None
+
+
+class TextInputField(Widget):
     text = Reactive("")
 
     def render(self) -> Markdown:
@@ -136,7 +180,7 @@ class Timer(Widget):
 class TimerAppWidgets(GridView):
     welcome = Welcome()
     timer = Timer()
-    text_input = TextInput()
+    text_input_field = TextInputField()
 
     def on_mount(self) -> None:
         self.grid.set_gap(8, 1)
@@ -146,13 +190,13 @@ class TimerAppWidgets(GridView):
         self.grid.add_column("col", repeat=2)
         self.grid.add_row("row", repeat=15)
         self.grid.add_areas(
-            text_input="col1-start|col2-end,row15",
+            text_input_field="col1-start|col2-end,row15",
             welcome="col1,row1-start|row14-end",
             timer="col2,row1-start|row14-end",
         )
 
         self.grid.place(
-            text_input=self.text_input,
+            text_input_field=self.text_input_field,
             welcome=self.welcome,
             timer=self.timer,
         )
@@ -162,6 +206,7 @@ class TimerApp(App):
     receiving_text_input = False
     displaying_help = False
     widgets = TimerAppWidgets()
+    name_input = TextInput()
 
     async def on_mount(self) -> None:
         try:
@@ -193,24 +238,14 @@ class TimerApp(App):
 
     async def on_key(self, event: Key) -> None:
         if self.receiving_text_input:
-            if event.key == "enter":
-                self.receiving_text_input = False
-                name = self.widgets.text_input.text[len("name: ") :].strip()
-                self.widgets.text_input.text = ""
-                if name:
-                    if name in self.widgets.timer.student_names:
-                        name += " II"
-                    self.widgets.timer.student_names.append(name)
-                    if len(self.widgets.timer.student_names) == 1:
-                        self.widgets.timer.pause = False
-            elif event.key == "ctrl+h":  # backspace
-                if len(self.widgets.text_input.text) > len("name: "):
-                    self.widgets.text_input.text = self.widgets.text_input.text[:-1]
-                else:
-                    self.receiving_text_input = False
-                    self.widgets.text_input.text = ""
-            elif len(event.key) == 1:
-                self.widgets.text_input.text += event.key
+            self.receiving_text_input, name = self.name_input(event.key, "name: ")
+            self.widgets.text_input_field.text = self.name_input.text
+            if name:
+                if name in self.widgets.timer.student_names:
+                    name += " II"
+                self.widgets.timer.student_names.append(name)
+                if len(self.widgets.timer.student_names) == 1:
+                    self.widgets.timer.pause = False
         else:
             if event.key == "h":
                 # toggle displaying keyboard shortcuts help
@@ -243,7 +278,7 @@ class TimerApp(App):
             elif event.key == "a":
                 # add a student to the queue
                 self.receiving_text_input = True
-                self.widgets.text_input.text = "name: "
+                self.widgets.text_input_field.text = "name: "
             elif event.key == "n" and len(self.widgets.timer.student_names) > 1:
                 # go to the next student in queue
                 self.widgets.timer.student_names.append(
