@@ -9,7 +9,7 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 ## keyboard shortcuts
 
 * `h` toggles keyboard shortcut help
-* `a` changes your keyboard input mode to allow you to type a student's name. You will see "name: " and what you type appear in the bottom-left corner. When you have finished typing their name, press `enter` to add the student to the queue. You can also delete all of what you typed to cancel.
+* `a` allows you to enter a student's name to add then to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.
 * `z` undoes the previous `n` keypress.
 * `!` removes the last student in the queue.
@@ -21,8 +21,8 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `space` pauses/unpauses the individual meetings timer.
 * `j` adds 5 seconds to the individual meetings timer.
 * `l` subtracts 5 seconds from the individual meetings timer.
-* `up` adds 30 secodns to the individual meetings timer.
-* `down` subtracts 30 secodns from the individual meetings timer.
+* `up` adds 30 seconds to the individual meetings timer.
+* `down` subtracts 30 seconds from the individual meetings timer.
 * `r` resets the individual meetings timer.
 * `d` allows you to change the individual meetings duration (in minutes).
 * `s` saves student info; for if you have autosave disabled.

@@ -276,7 +276,7 @@ class TimerApp(App):
                         """\
                         [u][b]keyboard shortcuts:[/b][/u]
                         [b][green]h[/green][/b] — toggles this help message
-                        [b][green]a[/green][/b] — changes your keyboard input mode to allow you to type a student's name. You will see [white]"name: "[/white] and what you type appear in the bottom-left corner. When you have finished typing their name, press [green]enter[/green] to add the student to the queue. You can also delete all of what you typed to cancel.
+                        [b][green]a[/green][/b] — allows you to enter a student's name to add then to the queue.
                         [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
                         [b][green]z[/green][/b] — undoes the previous [green]n[/green] keypress.
                         [b][green]![/green][/b] — removes the last student in the queue.
