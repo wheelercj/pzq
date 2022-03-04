@@ -21,3 +21,4 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `j` adds 5 seconds to the individual meetings timer.
 * `l` subtracts 5 seconds from the individual meetings timer.
 * `r` resets the individual meetings timer.
+* `s` saves student info; for if you have autosave disabled.

@@ -273,6 +273,7 @@ class TimerApp(App):
                         [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
                         [b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer.
                         [b][green]r[/green][/b] — resets the individual meetings timer.
+                        [b][green]s[/green][/b] — saves student info; for if you have autosave disabled.
                         """
                     )
             elif event.key == "a":
@@ -344,6 +345,8 @@ class TimerApp(App):
                     self.widgets.timer.MAX_INDIVIDUAL_SECONDS
                 )
                 self.widgets.timer.pause = True
+            elif event.key == "s":
+                self.widgets.timer.save_all_students()
 
 
 if __name__ == "__main__":
