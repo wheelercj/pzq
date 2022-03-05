@@ -2,9 +2,21 @@
 
 Easy Zoom queueing for tutors (and others!) using breakout rooms and two devices.
 
-Some meeting waitlists are confusing and isolating for students waiting for help, but this queueing app makes it easy to immediately bring all students into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared even when they are helping a student in a breakout room (they must use a second device). Names and wait times are saved regularly, so the app can be restarted any time if needed.
+Some meeting waitlists are confusing and isolating for students waiting for help, but this queueing app makes it easy to immediately bring all students into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared even when they are helping a student in a breakout room (they must use a second device).
 
 ![demo](docs/demo1.png)
+
+## features
+
+* Simple controls with a smart queue. For example, the timers automatically pause, unpause, or reset in many situations when they should.
+* Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
+* A sound notifies you when a timer has run out.
+* Names and wait times are saved automatically, so the app can be restarted any time if needed.
+* Settings can be changed in the file settings.yaml, which appears in the app's folder the first time it runs.
+
+## usage
+
+This is a terminal app that is currently only being provided as source code. With Python on your device, you can download the source code and run it with the terminal command `python3 main.py` while in the app's folder. If you will use this often, I recommend creating your own custom terminal command to make running zq easier. For example, I did this with my Windows computer by creating a file called `zq.bat` with the content `py -3.10 C:\Users\chris\Documents\programming\zq\src\zq\main.py`, and adding the file to the PATH user environment variable. Now I can run zq by just opening Windows Terminal and entering `zq` (it doesn't matter what the current working directory is).
 
 ## keyboard shortcuts
 
@@ -28,6 +40,7 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * `s` saves student info; for if you have autosave disabled.
 
 ## third-party dependencies
+
 * [Textual](https://github.com/Textualize/textual) for the text user interface
 * [Rich](https://github.com/Textualize/rich), which is used by Textual
 * [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
