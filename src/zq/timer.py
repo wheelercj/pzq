@@ -67,7 +67,7 @@ class Timer(Widget):
         if not self.student_names:
             self.group_seconds = 0
             return Align.center(
-                settings["empty lines above"] * "\n" + "\n(no students in queue)"
+                settings["empty lines above"] * "\n" + "(no students in queue)"
             )
         timer_message = self.get_timer_message()
         return Align.center(settings["empty lines above"] * "\n" + "\n" + timer_message)
