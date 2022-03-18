@@ -20,6 +20,7 @@ This is a terminal app that is currently only being provided as source code. Wit
 ## keyboard shortcuts
 
 * `h` toggles keyboard shortcut help.
+* `@` shows info about this app.
 * `o` opens the settings file. Restart to apply changes.
 * `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.

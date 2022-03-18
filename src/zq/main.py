@@ -22,6 +22,7 @@ class TimerApp(App):
     receiving_minutes_input = False
     text_input = TextInput()
     displaying_help = False
+    displaying_about = False
     widgets = TimerAppWidgets()
 
     async def on_mount(self) -> None:
@@ -88,6 +89,8 @@ class TimerApp(App):
         else:
             if event.key == "h":
                 self.toggle_help_display()
+            elif event.key == "@":
+                self.toggle_about_display()
             elif event.key == "o":
                 self.open_settings_file()
             elif event.key == "a":  # add a student to the queue
@@ -158,7 +161,21 @@ class TimerApp(App):
             )
         else:
             self.displaying_help = True
+            self.displaying_about = False
             self.widgets.welcome.message = self.get_help_text()
+
+    def toggle_about_display(self) -> None:
+        if self.displaying_about:
+            self.displaying_about = False
+            self.widgets.welcome.message = (
+                settings["empty lines above"] * "\n" + settings["welcome message"]
+            )
+        else:
+            self.displaying_about = True
+            self.displaying_help = False
+            self.widgets.welcome.message = (
+                settings["empty lines above"] * "\n" + self.get_about_text()
+            )
 
     def open_settings_file(self) -> None:
         """Open's the app's settings file for the user to view."""
@@ -195,11 +212,23 @@ class TimerApp(App):
                 self.widgets.timer.max_individual_seconds
             )
 
+    def get_about_text(self) -> str:
+        return dedent(
+            """\
+            zq
+
+            Developed by Chris Wheeler, licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
+
+            [bright_black]You can close this message by pressing @ again.[/bright_black]
+            """
+        )
+
     def get_help_text(self) -> str:
         return dedent(
             """\
             [u][b]keyboard shortcuts:[/b][/u]
             [b][green]h[/green][/b] — toggles this help message.
+            [b][green]@[/green][/b] — shows info about this app.
             [b][green]o[/green][/b] — opens the settings file. Restart to apply changes.
             [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
             [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
