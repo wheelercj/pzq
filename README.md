@@ -12,7 +12,6 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically, so the app can be restarted any time if needed.
-* Settings can be changed in the file settings.yaml, which appears in the app's folder the first time it runs.
 
 ## usage
 
@@ -21,6 +20,7 @@ This is a terminal app that is currently only being provided as source code. Wit
 ## keyboard shortcuts
 
 * `h` toggles keyboard shortcut help.
+* `o` opens the settings file. Restart to apply changes.
 * `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.
 * `z` undoes the previous `n` keypress.

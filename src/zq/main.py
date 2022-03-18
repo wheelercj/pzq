@@ -1,8 +1,10 @@
+import os
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
 from textwrap import dedent
 import random
 import sqlite3
+import webbrowser
 
 # internal imports
 from settings import settings, save_settings
@@ -86,6 +88,8 @@ class TimerApp(App):
         else:
             if event.key == "h":
                 self.toggle_help_display()
+            elif event.key == "o":
+                self.open_settings_file()
             elif event.key == "a":  # add a student to the queue
                 self.receiving_name_input = True
                 self.widgets.text_input_field.text = "name: "
@@ -156,6 +160,14 @@ class TimerApp(App):
             self.displaying_help = True
             self.widgets.welcome.message = self.get_help_text()
 
+    def open_settings_file(self) -> None:
+        """Open's the app's settings file for the user to view."""
+        folder_path = os.path.dirname(
+            os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        )
+        settings_path = os.path.join(folder_path, "settings.yaml")
+        webbrowser.open(os.path.normpath(settings_path))
+
     def go_to_next_student(self) -> None:
         self.widgets.timer.student_names.append(self.widgets.timer.student_names.pop(0))
         self.widgets.timer.previous_individual_seconds = (
@@ -188,6 +200,7 @@ class TimerApp(App):
             """\
             [u][b]keyboard shortcuts:[/b][/u]
             [b][green]h[/green][/b] — toggles this help message.
+            [b][green]o[/green][/b] — opens the settings file. Restart to apply changes.
             [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
             [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
             [b][green]z[/green][/b] — undoes the previous [green]n[/green] key press.
