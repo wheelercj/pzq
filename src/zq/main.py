@@ -18,7 +18,8 @@ def main():
 
 
 class TimerApp(App):
-    receiving_name_input = False
+    receiving_new_name_input = False
+    receiving_existing_name_input = False
     receiving_minutes_input = False
     text_input = TextInput()
     displaying_help = False
@@ -56,8 +57,8 @@ class TimerApp(App):
             except IndexError:
                 pass
 
-    def get_name_input(self, key: str) -> None:
-        self.receiving_name_input, name = self.text_input(key, "name: ")
+    def get_new_name_input(self, key: str) -> None:
+        self.receiving_new_name_input, name = self.text_input(key, "name: ")
         self.widgets.text_input_field.text = self.text_input.text
         if name:
             if name in self.widgets.timer.student_names:
@@ -65,6 +66,17 @@ class TimerApp(App):
             self.widgets.timer.student_names.append(name)
             if len(self.widgets.timer.student_names) == 1:
                 self.widgets.timer.pause = False
+
+    def get_existing_name_input(self, key: str) -> None:
+        self.receiving_existing_name_input, name = self.text_input(
+            key, "name to remove: "
+        )
+        self.widgets.text_input_field.text = self.text_input.text
+        if name:
+            if name in self.widgets.timer.student_names:
+                self.widgets.timer.student_names.remove(name)
+                if not len(self.widgets.timer.student_names):
+                    self.widgets.timer.pause = True
 
     def get_minutes_input(self, key: str) -> None:
         self.receiving_minutes_input, minutes = self.text_input(key, "minutes: ")
@@ -82,8 +94,10 @@ class TimerApp(App):
             save_settings()
 
     async def on_key(self, event: Key) -> None:
-        if self.receiving_name_input:
-            self.get_name_input(event.key)
+        if self.receiving_new_name_input:
+            self.get_new_name_input(event.key)
+        elif self.receiving_existing_name_input:
+            self.get_existing_name_input(event.key)
         elif self.receiving_minutes_input:
             self.get_minutes_input(event.key)
         else:
@@ -94,7 +108,7 @@ class TimerApp(App):
             elif event.key == "o":
                 self.open_settings_file()
             elif event.key == "a":  # add a student to the queue
-                self.receiving_name_input = True
+                self.receiving_new_name_input = True
                 self.widgets.text_input_field.text = "name: "
             elif event.key == "n" and len(self.widgets.timer.student_names) > 1:
                 self.go_to_next_student()
@@ -105,6 +119,9 @@ class TimerApp(App):
                 self.return_to_previous_meeting()
             elif event.key == "!":
                 self.remove_last_student()
+            elif event.key == "?":  # remove student by name
+                self.receiving_existing_name_input = True
+                self.widgets.text_input_field.text = "name to remove: "
             elif event.key == "$":  # randomize the order of the students in the queue
                 random.shuffle(self.widgets.timer.student_names)
             elif event.key == "m":
@@ -234,6 +251,7 @@ class TimerApp(App):
             [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
             [b][green]z[/green][/b] — undoes the previous [green]n[/green] key press.
             [b][green]![/green][/b] — removes the last student in the queue.
+            [b][green]?[/green][/b] — removes a student from the queue by name.
             [b][green]$[/green][/b] — randomizes the order of the queue.
             [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
             [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
