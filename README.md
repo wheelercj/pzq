@@ -9,9 +9,10 @@ Some meeting waitlists are confusing and isolating for students waiting for help
 ## features
 
 * Simple controls with a smart queue. For example, the timers automatically pause, unpause, or reset in many situations when they should.
+* Easily add color and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A sound notifies you when a timer has run out.
-* Names and wait times are saved automatically, so the app can be restarted any time if needed.
+* Names and wait times are saved automatically so the app can be restarted any time if needed.
 
 ## usage
 
