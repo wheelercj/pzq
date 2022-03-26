@@ -1,18 +1,18 @@
 # zq
 
-Easy Zoom queueing for tutors (and others!) using breakout rooms and two devices.
+Easy Zoom queueing by sharing your screen.
 
-Some meeting waitlists are confusing and isolating for students waiting for help, but this queueing app makes it easy to immediately bring all students into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared even when they are helping a student in a breakout room (they must use a second device).
+Some meeting waitlists are confusing and isolating for those waiting for help, but this queueing app makes it easy to immediately bring everyone into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared for others to see the queue.
 
 ![demo](docs/demo1.png)
 
 ## features
 
 * Simple controls with a smart queue. For example, the timers automatically pause, unpause, or reset in many situations when they should.
-* Easily add color and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
-* Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
+* Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
+* Easily add color and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
 
 ## usage
 
