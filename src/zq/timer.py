@@ -22,6 +22,7 @@ class Mode(Enum):
 
 
 class Timer(Widget):
+    chime.theme("material")
     max_individual_seconds = (
         settings["meeting minutes"] * 60 + settings["transition seconds"]
     )
@@ -86,9 +87,9 @@ class Timer(Widget):
         if self.current_mode == Mode.GROUP and self.student_names:
             self.group_seconds += 1
         if self.individual_seconds == settings["transition seconds"]:
-            chime.success()
+            chime.warning()
         elif self.individual_seconds == 1:
-            chime.info()
+            chime.error()
 
     def get_timer_message(self) -> str:
         timer_message = (
