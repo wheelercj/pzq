@@ -32,12 +32,11 @@ This is a terminal app that is currently only being provided as source code. Wit
 * `m` toggles the meeting mode between group and individual meetings.
 * `home` changes the meeting mode to display a message saying tutoring hours will start soon.
 * `end` changes the meeting mode to display a message saying tutoring hours will soon end.
-* `k` pauses/unpauses the individual meetings timer.
-* `space` pauses/unpauses the individual meetings timer.
+* `k` or `space` pauses/unpauses the individual meetings timer.
 * `j` adds 5 seconds to the individual meetings timer.
 * `l` subtracts 5 seconds from the individual meetings timer.
-* `up` adds 30 seconds to the individual meetings timer.
-* `down` subtracts 30 seconds from the individual meetings timer.
+* `left` adds 30 seconds to the individual meetings timer.
+* `right` subtracts 30 seconds from the individual meetings timer.
 * `r` resets the individual meetings timer.
 * `d` allows you to change the individual meetings duration (in minutes).
 * `s` saves student info; for if you have autosave disabled.
