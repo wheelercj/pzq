@@ -1,5 +1,5 @@
 from textwrap import dedent
-import yaml
+import yaml  # https://pyyaml.org/wiki/PyYAMLDocumentation
 import os
 
 
