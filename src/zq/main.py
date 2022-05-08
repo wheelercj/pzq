@@ -13,6 +13,9 @@ from timer import Mode
 from timer_app_widgets import TimerAppWidgets
 
 
+VERSION = "0.1.0"
+
+
 def main():
     TimerApp.run(log="textual.log")
 
@@ -231,10 +234,12 @@ class TimerApp(App):
 
     def get_about_text(self) -> str:
         return dedent(
-            """\
+            f"""\
             zq
+            
+            version [white]{VERSION}[/white]
 
-            Developed by Chris Wheeler, licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
+            Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
 
             [bright_black]You can close this message by pressing @ again.[/bright_black]
             """
