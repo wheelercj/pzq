@@ -16,7 +16,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 ## usage
 
-This is a terminal app that is currently only being provided as source code. With Python on your device, you can download the source code and run it with the terminal command `python3 main.py` for Mac or Linux or `py main.py` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
+This is a terminal app that is currently only being provided as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 main.py` for Mac or Linux or `py main.py` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
 
 ## keyboard shortcuts
 
