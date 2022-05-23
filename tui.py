@@ -1,4 +1,5 @@
 import os
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
@@ -89,6 +90,16 @@ class TimerApp(App):
         self.widgets.text_input_field.text = self.text_input.text
         if name:
             if name in self.widgets.timer.student_names:
+                if name == self.widgets.timer.student_names[0]:
+                    names = self.widgets.timer.student_names
+                    if len(names) > 1 and names[1].endswith("-minute break"):
+                        self.widgets.timer.individual_seconds = (
+                            int(names[1].split("-")[0]) * 60
+                        )
+                    else:
+                        self.widgets.timer.individual_seconds = (
+                            self.widgets.timer.max_individual_seconds
+                        )
                 self.widgets.timer.student_names.remove(name)
                 if not len(self.widgets.timer.student_names):
                     self.widgets.timer.pause = True
@@ -224,9 +235,7 @@ class TimerApp(App):
             self.widgets.timer.individual_seconds
         )
         if names[0].endswith("-minute break"):
-            self.widgets.timer.individual_seconds = (
-                int(names[0].split("-")[0]) * 60
-            )
+            self.widgets.timer.individual_seconds = int(names[0].split("-")[0]) * 60
         else:
             self.widgets.timer.individual_seconds = (
                 self.widgets.timer.max_individual_seconds
