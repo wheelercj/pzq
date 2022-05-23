@@ -102,16 +102,24 @@ class Timer(Widget):
             timer_message += (
                 f"[bright_black]{format_time(self.individual_seconds)}[/bright_black] "
             )
-        timer_message += f"{self.student_names[0]}"
+        timer_message += f"[white]{self.student_names[0]}[/white]"
         if len(self.student_names) > 1:
             if self.current_mode == Mode.GROUP:
                 for i, name in enumerate(self.student_names[1:]):
-                    timer_message += f"\n{name}"
+                    timer_message += f"\n[white]{name}[/white]"
             elif self.current_mode == Mode.INDIVIDUAL:
                 timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
+                next_seconds = self.individual_seconds
+                break_previously = False
                 for i, name in enumerate(self.student_names[1:]):
-                    next_seconds = self.individual_seconds + (
-                        i * self.max_individual_seconds
+                    if i and not break_previously:
+                        next_seconds += self.max_individual_seconds
+                    timer_message += (
+                        f"{format_time(next_seconds)} [white]{name}[/white]\n\n"
                     )
-                    timer_message += f"{format_time(next_seconds)} {name}\n\n"
+                    if name.endswith("-minute break"):
+                        next_seconds += int(name.split("-minute break")[0]) * 60
+                        break_previously = True
+                    else:
+                        break_previously = False
         return timer_message

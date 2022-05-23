@@ -28,6 +28,7 @@ This is a terminal app that is currently only being provided as source code. Wit
 * `z` undoes the previous `n` keypress.
 * `!` removes the last student in the queue.
 * `?` removes a student from the queue by name.
+* `b` adds a 5 minute break to the end of the queue.
 * `$` randomizes the order of the queue.
 * `m` toggles the meeting mode between group and individual meetings.
 * `home` changes the meeting mode to display a message saying tutoring hours will start soon.

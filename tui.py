@@ -73,6 +73,14 @@ class TimerApp(App):
             if len(self.widgets.timer.student_names) == 1:
                 self.widgets.timer.pause = False
 
+    def add_5_minute_break(self) -> None:
+        names = self.widgets.timer.student_names
+        if names and names[-1].endswith("-minute break"):
+            minutes = int(names[-1].split("-")[0])
+            names[-1] = f"{minutes + 5}-minute break"
+        else:
+            names.append("5-minute break")
+
     def get_existing_name_input(self, key: str) -> None:
         self.receiving_existing_name_input, name = self.text_input(
             key, "name to remove: "
@@ -128,6 +136,8 @@ class TimerApp(App):
             elif event.key == "?":  # remove student by name
                 self.receiving_existing_name_input = True
                 self.widgets.text_input_field.text = "name to remove: "
+            elif event.key == "b":
+                self.add_5_minute_break()
             elif event.key == "$":  # randomize the order of the students in the queue
                 random.shuffle(self.widgets.timer.student_names)
             elif event.key == "m":
@@ -209,13 +219,19 @@ class TimerApp(App):
         webbrowser.open(os.path.normpath(settings_path))
 
     def go_to_next_student(self) -> None:
-        self.widgets.timer.student_names.append(self.widgets.timer.student_names.pop(0))
+        names = self.widgets.timer.student_names
+        names.append(names.pop(0))
         self.widgets.timer.previous_individual_seconds = (
             self.widgets.timer.individual_seconds
         )
-        self.widgets.timer.individual_seconds = (
-            self.widgets.timer.max_individual_seconds
-        )
+        if names[0].endswith("-minute break"):
+            self.widgets.timer.individual_seconds = (
+                int(names[0].split("-")[0]) * 60
+            )
+        else:
+            self.widgets.timer.individual_seconds = (
+                self.widgets.timer.max_individual_seconds
+            )
 
     def return_to_previous_meeting(self) -> None:
         temp = self.widgets.timer.individual_seconds
@@ -260,6 +276,7 @@ class TimerApp(App):
             [b][green]z[/green][/b] — undoes the previous [green]n[/green] key press.
             [b][green]![/green][/b] — removes the last student in the queue.
             [b][green]?[/green][/b] — removes a student from the queue by name.
+            [b][green]b[/green][/b] — adds a 5 minute break to the end of the queue.
             [b][green]$[/green][/b] — randomizes the order of the queue.
             [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
             [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
