@@ -12,7 +12,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
-* Easily add color and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
+* Easily add [color](https://rich.readthedocs.io/en/latest/appendix/colors.html) and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
 
 ## usage
 
