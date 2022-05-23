@@ -1,6 +1,7 @@
 import os
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
+from textual.widgets import ScrollView
 from textwrap import dedent
 import random
 import sqlite3
@@ -30,6 +31,10 @@ class TimerApp(App):
     widgets = TimerAppWidgets()
 
     async def on_mount(self) -> None:
+        self.widgets.welcome = ScrollView(gutter=1)
+        await self.widgets.welcome.update(
+            settings["empty lines above"] * "\n" + settings["welcome message"]
+        )
         try:
             self.load_students()
         except sqlite3.OperationalError:
@@ -105,9 +110,9 @@ class TimerApp(App):
             self.get_minutes_input(event.key)
         else:
             if event.key == "h":
-                self.toggle_help_display()
+                await self.toggle_help_display()
             elif event.key == "@":
-                self.toggle_about_display()
+                await self.toggle_about_display()
             elif event.key == "o":
                 self.open_settings_file()
             elif event.key == "a":  # add a student to the queue
@@ -173,27 +178,27 @@ class TimerApp(App):
             elif event.key == "s":
                 self.widgets.timer.save_all_students()
 
-    def toggle_help_display(self) -> None:
+    async def toggle_help_display(self) -> None:
         if self.displaying_help:
             self.displaying_help = False
-            self.widgets.welcome.message = (
+            await self.widgets.welcome.update(
                 settings["empty lines above"] * "\n" + settings["welcome message"]
             )
         else:
             self.displaying_help = True
             self.displaying_about = False
-            self.widgets.welcome.message = self.get_help_text()
+            await self.widgets.welcome.update(self.get_help_text())
 
-    def toggle_about_display(self) -> None:
+    async def toggle_about_display(self) -> None:
         if self.displaying_about:
             self.displaying_about = False
-            self.widgets.welcome.message = (
+            await self.widgets.welcome.update(
                 settings["empty lines above"] * "\n" + settings["welcome message"]
             )
         else:
             self.displaying_about = True
             self.displaying_help = False
-            self.widgets.welcome.message = (
+            await self.widgets.welcome.update(
                 settings["empty lines above"] * "\n" + self.get_about_text()
             )
 

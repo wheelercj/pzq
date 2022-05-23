@@ -1,11 +1,9 @@
-from rich.align import Align  # https://github.com/Textualize/rich
-from rich.markdown import Markdown
+from rich.markdown import Markdown  # https://github.com/Textualize/rich
 from textual.widget import Widget
 from textual.reactive import Reactive
 from textual.views import GridView
 
 # internal imports
-from settings import settings
 from timer import Timer
 
 
@@ -16,17 +14,7 @@ class TextInputField(Widget):
         return Markdown(self.text)
 
 
-class Welcome(Widget):
-    message = Reactive(
-        settings["empty lines above"] * "\n" + settings["welcome message"]
-    )
-
-    def render(self) -> Align:
-        return Align.center(self.message)
-
-
 class TimerAppWidgets(GridView):
-    welcome = Welcome()
     timer = Timer()
     text_input_field = TextInputField()
 
