@@ -1,10 +1,5 @@
 from textwrap import dedent
 import yaml  # https://pyyaml.org/wiki/PyYAMLDocumentation
-import os
-
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-os.chdir("../..")
 
 
 def format_setting_string(message: str) -> str:

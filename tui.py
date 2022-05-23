@@ -1,4 +1,5 @@
 import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
 from textual.widgets import ScrollView
@@ -212,11 +213,9 @@ class TimerApp(App):
 
     def open_settings_file(self) -> None:
         """Open's the app's settings file for the user to view."""
-        folder_path = os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        )
-        settings_path = os.path.join(folder_path, "settings.yaml")
-        webbrowser.open(os.path.normpath(settings_path))
+        if not os.path.exists("settings.yaml"):
+            save_settings()
+        webbrowser.open("settings.yaml")
 
     def go_to_next_student(self) -> None:
         names = self.widgets.timer.student_names
