@@ -6,12 +6,10 @@ from textwrap import dedent
 import random
 import sqlite3
 import webbrowser
-
-# internal imports
-from settings import settings, save_settings
-from text_input import TextInput
-from timer import Mode
-from timer_app_widgets import TimerAppWidgets
+from zq.settings import settings, save_settings
+from zq.text_input import TextInput
+from zq.timer import Mode
+from zq.timer_app_widgets import TimerAppWidgets
 
 
 VERSION = "0.1.0"

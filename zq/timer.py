@@ -3,9 +3,7 @@ import chime  # https://pypi.org/project/chime/
 from enum import Enum
 from textual.widget import Widget
 import sqlite3
-
-# internal imports
-from settings import settings
+from zq.settings import settings
 
 
 def format_time(seconds: int) -> str:

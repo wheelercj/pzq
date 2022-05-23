@@ -2,9 +2,7 @@ from rich.markdown import Markdown  # https://github.com/Textualize/rich
 from textual.widget import Widget
 from textual.reactive import Reactive
 from textual.views import GridView
-
-# internal imports
-from timer import Timer
+from zq.timer import Timer
 
 
 class TextInputField(Widget):
