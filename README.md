@@ -28,7 +28,7 @@ This is a terminal app that is currently only being provided as source code. Wit
 * `z` undoes the previous `n` keypress.
 * `!` removes the last student in the queue.
 * `?` removes a student from the queue by name.
-* `b` adds a 5 minute break to the end of the queue.
+* `b` adds a 5-minute break to the end of the queue.
 * `$` randomizes the order of the queue.
 * `m` toggles the meeting mode between group and individual meetings.
 * `home` changes the meeting mode to display a message saying tutoring hours will start soon.
@@ -36,8 +36,8 @@ This is a terminal app that is currently only being provided as source code. Wit
 * `k` or `space` pauses/unpauses the individual meetings timer.
 * `j` adds 5 seconds to the individual meetings timer.
 * `l` subtracts 5 seconds from the individual meetings timer.
-* `left` adds 30 seconds to the individual meetings timer.
-* `right` subtracts 30 seconds from the individual meetings timer.
+* `left arrow` adds 30 seconds to the individual meetings timer.
+* `right arrow` subtracts 30 seconds from the individual meetings timer.
 * `r` resets the individual meetings timer.
 * `d` allows you to change the individual meetings duration (in minutes).
 * `s` saves student info; for if you have autosave disabled.
