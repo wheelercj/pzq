@@ -3,6 +3,7 @@ import yaml  # https://pyyaml.org/wiki/PyYAMLDocumentation
 
 
 def format_setting_string(message: str) -> str:
+    """Format a string for the settings menu."""
     return dedent(message).replace("\n\n", "␝").replace("\n", " ").replace("␝", "\n\n")
 
 
@@ -46,6 +47,10 @@ def save_settings() -> None:
 
 
 def load_settings() -> None:
+    """Load settings from the settings.yaml file.
+    
+    If the file does not exist or cannot be parsed, the default settings are used.
+    """
     try:
         with open("settings.yaml", "r") as file:
             settings.update(yaml.load(file, Loader=yaml.FullLoader))

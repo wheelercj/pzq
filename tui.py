@@ -42,6 +42,11 @@ class TimerApp(App):
         await self.view.dock(self.widgets)
 
     def create_students_table(self) -> None:
+        """Creates the students table in the database.
+
+        Assumes the database does not exist. The seconds column will have the
+        same value in every row: the remaining seconds of the next waiting student.
+        """
         with sqlite3.connect("students.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -55,6 +60,7 @@ class TimerApp(App):
             conn.commit()
 
     def load_students(self) -> None:
+        """Loads student names and wait times from the database."""
         with sqlite3.connect("students.db") as conn:
             cursor = conn.cursor()
             try:
@@ -66,6 +72,13 @@ class TimerApp(App):
                 pass
 
     def get_new_name_input(self, key: str) -> None:
+        """Gets the name of a new student from the user, one key per call.
+
+        Parameters
+        ----------
+        key : str
+            The key pressed by the user.
+        """
         self.receiving_new_name_input, name = self.text_input(key, "name: ")
         self.widgets.text_input_field.text = self.text_input.text
         if name:
@@ -76,6 +89,11 @@ class TimerApp(App):
                 self.widgets.timer.pause = False
 
     def add_5_minute_break(self) -> None:
+        """Adds a 5-minute break to the end of the list of students.
+
+        If there is already an n-minute break there, it is changed to an
+        n+5-minute break.
+        """
         names = self.widgets.timer.student_names
         if names and names[-1].endswith("-minute break"):
             minutes = int(names[-1].split("-")[0])
@@ -84,6 +102,13 @@ class TimerApp(App):
             names.append("5-minute break")
 
     def get_existing_name_input(self, key: str) -> None:
+        """Gets a name from the user one key per call and removes the student.
+
+        Parameters
+        ----------
+        key : str
+            The key pressed by the user.
+        """
         self.receiving_existing_name_input, name = self.text_input(
             key, "name to remove: "
         )
@@ -105,6 +130,13 @@ class TimerApp(App):
                     self.widgets.timer.pause = True
 
     def get_minutes_input(self, key: str) -> None:
+        """Gets minutes input one key per call and updates the interface & settings.
+
+        Parameters
+        ----------
+        key : str
+            The key pressed by the user.
+        """
         self.receiving_minutes_input, minutes = self.text_input(key, "minutes: ")
         self.widgets.text_input_field.text = self.text_input.text
         if minutes and minutes.isdigit() and int(minutes) > 0:
@@ -120,85 +152,102 @@ class TimerApp(App):
             save_settings()
 
     async def on_key(self, event: Key) -> None:
+        """Handles key press events from the user via Textual.
+
+        Parameters
+        ----------
+        event : Key
+            The key pressed by the user.
+        """
+        await self.on_key_str(event.key)
+
+    async def on_key_str(self, key: str) -> None:
+        """Handles key presses.
+
+        Parameters
+        ----------
+        key : str
+            The key pressed by the user.
+        """
         if self.receiving_new_name_input:
-            self.get_new_name_input(event.key)
+            self.get_new_name_input(key)
+            return
         elif self.receiving_existing_name_input:
-            self.get_existing_name_input(event.key)
+            self.get_existing_name_input(key)
+            return
         elif self.receiving_minutes_input:
-            self.get_minutes_input(event.key)
-        else:
-            if event.key == "h":
-                await self.toggle_help_display()
-            elif event.key == "@":
-                await self.toggle_about_display()
-            elif event.key == "o":
-                self.open_settings_file()
-            elif event.key == "a":  # add a student to the queue
-                self.receiving_new_name_input = True
-                self.widgets.text_input_field.text = "name: "
-            elif event.key == "n" and len(self.widgets.timer.student_names) > 1:
-                self.go_to_next_student()
-            elif (
-                event.key == "z"
-                and self.widgets.timer.previous_individual_seconds is not None
-            ):
-                self.return_to_previous_meeting()
-            elif event.key == "!":
-                self.remove_last_student()
-            elif event.key == "?":  # remove student by name
-                self.receiving_existing_name_input = True
-                self.widgets.text_input_field.text = "name to remove: "
-            elif event.key == "b":
-                self.add_5_minute_break()
-            elif event.key == "$":  # randomize the order of the students in the queue
-                random.shuffle(self.widgets.timer.student_names)
-            elif event.key == "m":
-                if self.widgets.timer.current_mode == Mode.GROUP:
-                    self.widgets.timer.current_mode = Mode.INDIVIDUAL
-                else:
-                    self.widgets.timer.current_mode = Mode.GROUP
-                    self.widgets.timer.group_seconds = 0
-            elif event.key == "home":
-                # change the meeting mode to say that tutoring hours start soon
-                self.widgets.timer.current_mode = Mode.START
-            elif event.key == "end":
-                # change the meeting mode to say that tutoring hours end soon
-                self.widgets.timer.current_mode = Mode.END
-            elif event.key == "k" or event.key == " ":
-                # pause the timers
-                self.widgets.timer.pause = not self.widgets.timer.pause
-            elif event.key == "j":
-                # add 5 seconds to the current meeting
-                self.widgets.timer.individual_seconds += 5
-            elif event.key == "l":
-                # subtract up to 5 seconds from the current meeting
-                if self.widgets.timer.individual_seconds >= 5:
-                    self.widgets.timer.individual_seconds -= 5
-                else:
-                    self.widgets.timer.individual_seconds = 0
-            elif event.key == "left":
-                # add 30 seconds to the current meeting
-                self.widgets.timer.individual_seconds += 30
-            elif event.key == "right":
-                # subtract up to 30 seconds from the current meeting
-                if self.widgets.timer.individual_seconds >= 30:
-                    self.widgets.timer.individual_seconds -= 30
-                else:
-                    self.widgets.timer.individual_seconds = 0
-            elif event.key == "r":
-                # reset the timer
-                self.widgets.timer.individual_seconds = (
-                    self.widgets.timer.max_individual_seconds
-                )
-                self.widgets.timer.pause = True
-            elif event.key == "d":
-                # change the individual meetings duration (in minutes)
-                self.receiving_minutes_input = True
-                self.widgets.text_input_field.text = "minutes: "
-            elif event.key == "s":
-                self.widgets.timer.save_all_students()
+            self.get_minutes_input(key)
+            return
+        if key == "h":
+            await self.toggle_help_display()
+        elif key == "@":
+            await self.toggle_about_display()
+        elif key == "o":
+            self.open_settings_file()
+        elif key == "a":  # add a student to the queue
+            self.receiving_new_name_input = True
+            self.widgets.text_input_field.text = "name: "
+        elif key == "n" and len(self.widgets.timer.student_names) > 1:
+            self.go_to_next_student()
+        elif key == "z" and self.widgets.timer.previous_individual_seconds is not None:
+            self.return_to_previous_meeting()
+        elif key == "!":
+            self.remove_last_student()
+        elif key == "?":  # remove student by name
+            self.receiving_existing_name_input = True
+            self.widgets.text_input_field.text = "name to remove: "
+        elif key == "b":
+            self.add_5_minute_break()
+        elif key == "$":  # randomize the order of the students in the queue
+            random.shuffle(self.widgets.timer.student_names)
+        elif key == "m":
+            if self.widgets.timer.current_mode == Mode.GROUP:
+                self.widgets.timer.current_mode = Mode.INDIVIDUAL
+            else:
+                self.widgets.timer.current_mode = Mode.GROUP
+                self.widgets.timer.group_seconds = 0
+        elif key == "home":
+            # change the meeting mode to say that tutoring hours start soon
+            self.widgets.timer.current_mode = Mode.START
+        elif key == "end":
+            # change the meeting mode to say that tutoring hours end soon
+            self.widgets.timer.current_mode = Mode.END
+        elif key == "k" or key == " ":
+            # pause the timers
+            self.widgets.timer.pause = not self.widgets.timer.pause
+        elif key == "j":
+            # add 5 seconds to the current meeting
+            self.widgets.timer.individual_seconds += 5
+        elif key == "l":
+            # subtract up to 5 seconds from the current meeting
+            if self.widgets.timer.individual_seconds >= 5:
+                self.widgets.timer.individual_seconds -= 5
+            else:
+                self.widgets.timer.individual_seconds = 0
+        elif key == "left":
+            # add 30 seconds to the current meeting
+            self.widgets.timer.individual_seconds += 30
+        elif key == "right":
+            # subtract up to 30 seconds from the current meeting
+            if self.widgets.timer.individual_seconds >= 30:
+                self.widgets.timer.individual_seconds -= 30
+            else:
+                self.widgets.timer.individual_seconds = 0
+        elif key == "r":
+            # reset the timer
+            self.widgets.timer.individual_seconds = (
+                self.widgets.timer.max_individual_seconds
+            )
+            self.widgets.timer.pause = True
+        elif key == "d":
+            # change the individual meetings duration (in minutes)
+            self.receiving_minutes_input = True
+            self.widgets.text_input_field.text = "minutes: "
+        elif key == "s":
+            self.widgets.timer.save_all_students()
 
     async def toggle_help_display(self) -> None:
+        """Toggles the help display."""
         if self.displaying_help:
             self.displaying_help = False
             await self.widgets.welcome.update(
@@ -210,6 +259,7 @@ class TimerApp(App):
             await self.widgets.welcome.update(self.get_help_text())
 
     async def toggle_about_display(self) -> None:
+        """Toggles the about display."""
         if self.displaying_about:
             self.displaying_about = False
             await self.widgets.welcome.update(
@@ -223,12 +273,13 @@ class TimerApp(App):
             )
 
     def open_settings_file(self) -> None:
-        """Open's the app's settings file for the user to view."""
+        """Opens the app's settings file for the user to view."""
         if not os.path.exists("settings.yaml"):
             save_settings()
         webbrowser.open("settings.yaml")
 
     def go_to_next_student(self) -> None:
+        """Rotates the queue forwards."""
         names = self.widgets.timer.student_names
         names.append(names.pop(0))
         self.widgets.timer.previous_individual_seconds = (
@@ -242,6 +293,7 @@ class TimerApp(App):
             )
 
     def return_to_previous_meeting(self) -> None:
+        """Rotates the queue backwards."""
         temp = self.widgets.timer.individual_seconds
         self.widgets.timer.individual_seconds = (
             self.widgets.timer.previous_individual_seconds
@@ -252,6 +304,7 @@ class TimerApp(App):
         )
 
     def remove_last_student(self) -> None:
+        """Removes the last student from the queue."""
         if len(self.widgets.timer.student_names):
             self.widgets.timer.student_names.pop()
         if len(self.widgets.timer.student_names) == 1:
@@ -260,6 +313,7 @@ class TimerApp(App):
             )
 
     def get_about_text(self) -> str:
+        """Returns the about text."""
         return dedent(
             f"""\
             zq
@@ -273,6 +327,7 @@ class TimerApp(App):
         )
 
     def get_help_text(self) -> str:
+        """Returns the help text."""
         return dedent(
             """\
             [u][b]keyboard shortcuts:[/b][/u]

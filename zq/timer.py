@@ -43,6 +43,11 @@ class Timer(Widget):
         self.set_interval(settings["save interval seconds"], self.save_all_students)
 
     def save_all_students(self) -> None:
+        """Saves all student names and the next's wait time to the database.
+        
+        Every row of the seconds column receives the same number: the next student's
+        wait time.
+        """
         with sqlite3.connect("students.db") as conn:
             conn.execute("DELETE FROM students")
             cursor = conn.cursor()
@@ -54,6 +59,7 @@ class Timer(Widget):
             conn.commit()
 
     def render(self) -> Align:
+        """Render the timer."""
         self.tick()
         if self.current_mode == Mode.START:
             return Align.center(
@@ -72,6 +78,7 @@ class Timer(Widget):
         return Align.center(settings["empty lines above"] * "\n" + "\n" + timer_message)
 
     def tick(self) -> None:
+        """Called once each second; controls the timer."""
         if (
             self.student_names
             and self.individual_seconds
@@ -90,6 +97,7 @@ class Timer(Widget):
             chime.error()
 
     def get_timer_message(self) -> str:
+        """Create the timer message."""
         timer_message = (
             f"[bright_black]{self.mode_names[self.current_mode.value]}[/bright_black]"
         )
