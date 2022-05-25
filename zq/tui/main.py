@@ -10,9 +10,9 @@ from zq.common import (
     VERSION,
 )
 from zq.settings import settings, save_settings, open_settings_file
-from zq.text_input import TextInput
-from zq.timer import Mode
-from zq.timer_app_widgets import TimerAppWidgets
+from zq.tui.text_input import TextInput
+from zq.tui.timer import Mode
+from zq.tui.timer_app_widgets import TimerAppWidgets
 
 
 def main():
