@@ -1,3 +1,4 @@
+pyside6==6.3.0
 textual==0.1.15
 rich==11.2.0
 chime==0.6.0

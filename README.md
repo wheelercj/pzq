@@ -12,17 +12,17 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
-* Easily add [color](https://rich.readthedocs.io/en/latest/appendix/colors.html) and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
+* If you're using the TUI, you can easily add [color](https://rich.readthedocs.io/en/latest/appendix/colors.html) and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
 
 ## usage
 
-This is a terminal app that is currently only being provided as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 tui.py` for Mac or Linux or `py tui.py` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
+This app is currently only being provided as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 main.py` for Mac or Linux or `py main.py` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
 
 ## keyboard shortcuts
 
 * `h` toggles keyboard shortcut help.
 * `@` shows info about this app.
-* `o` opens the settings file. Restart to apply changes.
+* `o` opens the settings. Restart to apply changes.
 * `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.
 * `z` undoes the previous `n` keypress.
@@ -44,6 +44,7 @@ This is a terminal app that is currently only being provided as source code. Wit
 
 ## third-party dependencies
 
+* [PySide6](https://www.qt.io/qt-for-python) for the graphical user interface
 * [Textual](https://github.com/Textualize/textual) for the text user interface
 * [Rich](https://github.com/Textualize/rich), which is used by Textual
 * [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
