@@ -31,6 +31,10 @@ class MyLineEdit(QLineEdit):
         super().__init__()
         self.__ctrl_pressed = False
 
+    def keyReleaseEvent(self, event) -> None:
+        if event.key() == Qt.Key_Control:
+            self.__ctrl_pressed = False
+
     def keyPressEvent(self, event) -> None:
         if self.isHidden():
             # key = event.key()
