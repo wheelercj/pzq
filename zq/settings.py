@@ -1,10 +1,19 @@
+import os
 from textwrap import dedent
+import webbrowser
 import yaml  # https://pyyaml.org/wiki/PyYAMLDocumentation
 
 
 def format_setting_string(message: str) -> str:
     """Format a string for the settings menu."""
     return dedent(message).replace("\n\n", "␝").replace("\n", " ").replace("␝", "\n\n")
+
+
+def open_settings_file() -> None:
+    """Opens the app's settings file for the user to view."""
+    if not os.path.exists("settings.yaml"):
+        save_settings()
+    webbrowser.open("settings.yaml")
 
 
 __DEFAULT_SETTINGS = {

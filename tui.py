@@ -4,12 +4,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
 from textual.widgets import ScrollView
-from textwrap import dedent
 import random
-import sqlite3
-import webbrowser
-from zq.common import create_students_table, load_students
-from zq.settings import settings, save_settings
+from zq.common import load_students, add_5_minute_break, get_help_text, get_about_text
+from zq.settings import settings, save_settings, open_settings_file
 from zq.text_input import TextInput
 from zq.timer import Mode
 from zq.timer_app_widgets import TimerAppWidgets
@@ -39,7 +36,7 @@ class TimerApp(App):
         (
             self.widgets.timer.student_names,
             self.widgets.timer.individual_seconds,
-        ) = load_students()
+        ) = load_students(settings["meeting minutes"] + settings["transition seconds"])
         await self.view.dock(self.widgets)
 
     def get_new_name_input(self, key: str) -> None:
@@ -58,19 +55,6 @@ class TimerApp(App):
             self.widgets.timer.student_names.append(name)
             if len(self.widgets.timer.student_names) == 1:
                 self.widgets.timer.pause = False
-
-    def add_5_minute_break(self) -> None:
-        """Adds a 5-minute break to the end of the list of students.
-
-        If there is already an n-minute break there, it is changed to an
-        n+5-minute break.
-        """
-        names = self.widgets.timer.student_names
-        if names and names[-1].endswith("-minute break"):
-            minutes = int(names[-1].split("-")[0])
-            names[-1] = f"{minutes + 5}-minute break"
-        else:
-            names.append("5-minute break")
 
     def get_existing_name_input(self, key: str) -> None:
         """Gets a name from the user one key per call and removes the student.
@@ -154,7 +138,7 @@ class TimerApp(App):
         elif key == "@":
             await self.toggle_about_display()
         elif key == "o":
-            self.open_settings_file()
+            open_settings_file()
         elif key == "a":  # add a student to the queue
             self.receiving_new_name_input = True
             self.widgets.text_input_field.text = "name: "
@@ -168,7 +152,7 @@ class TimerApp(App):
             self.receiving_existing_name_input = True
             self.widgets.text_input_field.text = "name to remove: "
         elif key == "b":
-            self.add_5_minute_break()
+            add_5_minute_break(self.widgets.timer.student_names)
         elif key == "$":  # randomize the order of the students in the queue
             random.shuffle(self.widgets.timer.student_names)
         elif key == "m":
@@ -227,7 +211,7 @@ class TimerApp(App):
         else:
             self.displaying_help = True
             self.displaying_about = False
-            await self.widgets.welcome.update(self.get_help_text())
+            await self.widgets.welcome.update(get_help_text())
 
     async def toggle_about_display(self) -> None:
         """Toggles the about display."""
@@ -240,14 +224,8 @@ class TimerApp(App):
             self.displaying_about = True
             self.displaying_help = False
             await self.widgets.welcome.update(
-                settings["empty lines above"] * "\n" + self.get_about_text()
+                settings["empty lines above"] * "\n" + get_about_text(VERSION)
             )
-
-    def open_settings_file(self) -> None:
-        """Opens the app's settings file for the user to view."""
-        if not os.path.exists("settings.yaml"):
-            save_settings()
-        webbrowser.open("settings.yaml")
 
     def go_to_next_student(self) -> None:
         """Rotates the queue forwards."""
@@ -282,49 +260,6 @@ class TimerApp(App):
             self.widgets.timer.individual_seconds = (
                 self.widgets.timer.max_individual_seconds
             )
-
-    def get_about_text(self) -> str:
-        """Returns the about text."""
-        return dedent(
-            f"""\
-            zq
-            
-            version [white]{VERSION}[/white]
-
-            Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
-
-            [bright_black]You can close this message by pressing @ again.[/bright_black]
-            """
-        )
-
-    def get_help_text(self) -> str:
-        """Returns the help text."""
-        return dedent(
-            """\
-            [u][b]keyboard shortcuts:[/b][/u]
-            [b][green]h[/green][/b] — toggles this help message.
-            [b][green]@[/green][/b] — shows info about this app.
-            [b][green]o[/green][/b] — opens the settings file. Restart to apply changes.
-            [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
-            [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
-            [b][green]z[/green][/b] — undoes the previous [green]n[/green] key press.
-            [b][green]![/green][/b] — removes the last student in the queue.
-            [b][green]?[/green][/b] — removes a student from the queue by name.
-            [b][green]b[/green][/b] — adds a 5 minute break to the end of the queue.
-            [b][green]$[/green][/b] — randomizes the order of the queue.
-            [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
-            [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
-            [b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
-            [b][green]k[/green][/b] or [b][green]space[/green][/b] — pauses/unpauses the individual meetings timer.
-            [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
-            [b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer.
-            [b][green]left[/green][/b] — adds [white]30[/white] seconds to the individual meetings timer.
-            [b][green]right[/green][/b] — subtracts [white]30[/white] seconds from the individual meetings timer.
-            [b][green]r[/green][/b] — resets the individual meetings timer.
-            [b][green]d[/green][/b] — allows you to change the individual meetings duration (in minutes).
-            [b][green]s[/green][/b] — saves student info; for if you have autosave disabled.
-            """
-        )
 
 
 if __name__ == "__main__":
