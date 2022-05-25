@@ -8,6 +8,7 @@ from textwrap import dedent
 import random
 import sqlite3
 import webbrowser
+from zq.common import create_students_table, load_students
 from zq.settings import settings, save_settings
 from zq.text_input import TextInput
 from zq.timer import Mode
@@ -35,41 +36,11 @@ class TimerApp(App):
         await self.widgets.welcome.update(
             settings["empty lines above"] * "\n" + settings["welcome message"]
         )
-        try:
-            self.load_students()
-        except sqlite3.OperationalError:
-            self.create_students_table()
+        (
+            self.widgets.timer.student_names,
+            self.widgets.timer.individual_seconds,
+        ) = load_students()
         await self.view.dock(self.widgets)
-
-    def create_students_table(self) -> None:
-        """Creates the students table in the database.
-
-        Assumes the database does not exist. The seconds column will have the
-        same value in every row: the remaining seconds of the next waiting student.
-        """
-        with sqlite3.connect("students.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                CREATE TABLE students (
-                    id INTEGER PRIMARY KEY,
-                    name TEXT NOT NULL,
-                    seconds INTEGER NOT NULL);
-                """
-            )
-            conn.commit()
-
-    def load_students(self) -> None:
-        """Loads student names and wait times from the database."""
-        with sqlite3.connect("students.db") as conn:
-            cursor = conn.cursor()
-            try:
-                cursor.execute("SELECT name FROM students")
-                self.widgets.timer.student_names = [row[0] for row in cursor.fetchall()]
-                cursor.execute("SELECT seconds FROM students")
-                self.widgets.timer.individual_seconds = cursor.fetchall()[0][0]
-            except IndexError:
-                pass
 
     def get_new_name_input(self, key: str) -> None:
         """Gets the name of a new student from the user, one key per call.
