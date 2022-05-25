@@ -3,6 +3,9 @@ from textwrap import dedent
 from typing import Tuple, List
 
 
+VERSION = "0.2.1"
+
+
 def create_students_table() -> None:
     """Creates the students table in the database.
 

@@ -1,18 +1,18 @@
-import os
-
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from textual.app import App  # https://github.com/Textualize/textual
 from textual.events import Key
 from textual.widgets import ScrollView
 import random
-from zq.common import load_students, add_5_minute_break, get_help_text, get_about_text
+from zq.common import (
+    load_students,
+    add_5_minute_break,
+    get_help_text,
+    get_about_text,
+    VERSION,
+)
 from zq.settings import settings, save_settings, open_settings_file
 from zq.text_input import TextInput
 from zq.timer import Mode
 from zq.timer_app_widgets import TimerAppWidgets
-
-
-VERSION = "0.2.1"
 
 
 def main():
