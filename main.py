@@ -1,7 +1,7 @@
 import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-import tui
+from zq import tui
 
 
 def main():
