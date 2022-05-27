@@ -6,6 +6,9 @@ from typing import Tuple, List
 
 
 VERSION = "0.2.1"
+color_pattern = re.compile(
+    r"\[(?P<color>#[0-9a-fA-F]{6})\](?P<body>[^\[]*?)\[/#[0-9a-fA-F]{6}\]"
+)
 
 
 def format_time(seconds: int) -> str:
@@ -13,8 +16,25 @@ def format_time(seconds: int) -> str:
 
 
 def remove_bracketed_text(text: str) -> str:
-    """Removes text between brackets from a string."""
+    """Removes text between brackets and the brackets from a string."""
     return re.sub(r"\[[^\]]*\]", "", text)
+
+
+def convert_Rich_style_to_html(text: str) -> str:
+    """Converts Rich style tags to HTML tags.
+
+    For example, [#00ff00]text[/#00ff00] becomes
+    <span style="color: #00ff00">text</span>
+    and [b]text[/b] becomes <b>text</b>.
+    """
+    text = color_pattern.sub(r'<span style="color: \g<color>;">\g<body></span>', text)
+    text = (
+        text.replace("[b]", "<b>")
+        .replace("[/b]", "</b>")
+        .replace("[u]", "<u>")
+        .replace("[/u]", "</u>")
+    )
+    return text
 
 
 class Mode(Enum):
@@ -81,28 +101,28 @@ def get_help_text() -> str:
     return dedent(
         """\
         [u][b]keyboard shortcuts:[/b][/u]
-        [b][green]h[/green][/b] — toggles this help message.
-        [b][green]@[/green][/b] — shows info about this app.
-        [b][green]Ctrl[/b][/green] (or [b][green]Cmd[/b][/green]) and [b][green]+[/b][/green] or [b][green]-[/b][/green] to increase or decrease font size. Some terminals don't support this.
-        [b][green]o[/green][/b] — opens the settings file. Restart to apply changes.
-        [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
-        [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
-        [b][green]z[/green][/b] — undoes the previous [green]n[/green] key press.
-        [b][green]![/green][/b] — removes the last student in the queue.
-        [b][green]?[/green][/b] — removes a student from the queue by name.
-        [b][green]b[/green][/b] — adds a [white]5[/white] minute break to the end of the queue.
-        [b][green]$[/green][/b] — randomizes the order of the queue.
-        [b][green]m[/green][/b] — toggles the meeting mode between group and individual meetings.
-        [b][green]home[/green][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
-        [b][green]end[/green][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
-        [b][green]k[/green][/b] or [b][green]space[/green][/b] — pauses/unpauses the individual meetings timer.
-        [b][green]j[/green][/b] — adds [white]5[/white] seconds to the individual meetings timer.
-        [b][green]l[/green][/b] — subtracts [white]5[/white] seconds from the individual meetings timer.
-        [b][green]left[/green][/b] — adds [white]30[/white] seconds to the individual meetings timer.
-        [b][green]right[/green][/b] — subtracts [white]30[/white] seconds from the individual meetings timer.
-        [b][green]r[/green][/b] — resets the individual meetings timer.
-        [b][green]d[/green][/b] — allows you to change the individual meetings duration (in minutes).
-        [b][green]s[/green][/b] — saves student info; for if you have autosave disabled.
+        [b][#008000]h[/#008000][/b] — toggles this help message.
+        [b][#008000]@[/#008000][/b] — shows info about this app.
+        [b][#008000]Ctrl[/#008000][/b] (or [b][#008000]Cmd[/#008000][/b]) and [b][#008000]+[/#008000][/b] or [b][#008000]-[/#008000][/b] to increase or decrease font size. Some terminals don't support this.
+        [b][#008000]o[/#008000][/b] — opens the settings file. Restart to apply changes.
+        [b][#008000]a[/#008000][/b] — allows you to enter a student's name to add them to the queue.
+        [b][#008000]n[/#008000][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
+        [b][#008000]z[/#008000][/b] — undoes the previous [#008000]n[/#008000] key press.
+        [b][#008000]![/#008000][/b] — removes the last student in the queue.
+        [b][#008000]?[/#008000][/b] — removes a student from the queue by name.
+        [b][#008000]b[/#008000][/b] — adds a [#ffffff]5[/#ffffff] minute break to the end of the queue.
+        [b][#008000]$[/#008000][/b] — randomizes the order of the queue.
+        [b][#008000]m[/#008000][/b] — toggles the meeting mode between group and individual meetings.
+        [b][#008000]home[/#008000][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
+        [b][#008000]end[/#008000][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
+        [b][#008000]k[/#008000][/b] or [b][#008000]space[/#008000][/b] — pauses/unpauses the individual meetings timer.
+        [b][#008000]j[/#008000][/b] — adds [#ffffff]5[/#ffffff] seconds to the individual meetings timer.
+        [b][#008000]l[/#008000][/b] — subtracts [#ffffff]5[/#ffffff] seconds from the individual meetings timer.
+        [b][#008000]left[/#008000][/b] — adds [#ffffff]30[/#ffffff] seconds to the individual meetings timer.
+        [b][#008000]right[/#008000][/b] — subtracts [#ffffff]30[/#ffffff] seconds from the individual meetings timer.
+        [b][#008000]r[/#008000][/b] — resets the individual meetings timer.
+        [b][#008000]d[/#008000][/b] — allows you to change the individual meetings duration (in minutes).
+        [b][#008000]s[/#008000][/b] — saves student info; for if you have autosave disabled.
         """
     )
 
@@ -113,11 +133,11 @@ def get_about_text(VERSION: str) -> str:
         f"""\
         zq
         
-        version [white]{VERSION}[/white]
+        version [#ffffff]{VERSION}[/#ffffff]
 
         Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
 
-        [bright_black]You can close this message by pressing @ again.[/bright_black]
+        [#8E8E8E]You can close this message by pressing @ again.[/#8E8E8E]
         """
     )
 
@@ -131,21 +151,17 @@ def get_timer_message(
     max_individual_seconds: int,
 ) -> str:
     """Creates the timer message."""
-    timer_message = f"[bright_black]{mode_names[current_mode.value]}[/bright_black]"
+    timer_message = f"[#8E8E8E]{mode_names[current_mode.value]}[/#8E8E8E]"
     if current_mode == Mode.GROUP:
-        timer_message += (
-            f"       [bright_black]{format_time(group_seconds)}[/bright_black]"
-        )
+        timer_message += f"       [#8E8E8E]{format_time(group_seconds)}[/#8E8E8E]"
     timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
     if current_mode == Mode.INDIVIDUAL and len(student_names) == 1:
-        timer_message += (
-            f"[bright_black]{format_time(individual_seconds)}[/bright_black] "
-        )
-    timer_message += f"[white]{student_names[0]}[/white]"
+        timer_message += f"[#8E8E8E]{format_time(individual_seconds)}[/#8E8E8E] "
+    timer_message += f"[#ffffff]{student_names[0]}[/#ffffff]"
     if len(student_names) > 1:
         if current_mode == Mode.GROUP:
             for i, name in enumerate(student_names[1:]):
-                timer_message += f"\n[white]{name}[/white]"
+                timer_message += f"\n[#ffffff]{name}[/#ffffff]"
         elif current_mode == Mode.INDIVIDUAL:
             timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
             next_seconds = individual_seconds
@@ -154,7 +170,7 @@ def get_timer_message(
                 if i and not break_previously:
                     next_seconds += max_individual_seconds
                 timer_message += (
-                    f"{format_time(next_seconds)} [white]{name}[/white]\n\n"
+                    f"[#00ff00]{format_time(next_seconds)}[/#00ff00] [#ffffff]{name}[/#ffffff]\n\n"
                 )
                 if name.endswith("-minute break"):
                     next_seconds += int(name.split("-minute break")[0]) * 60

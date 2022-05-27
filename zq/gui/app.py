@@ -14,7 +14,7 @@ from zq.common import (
     add_5_minute_break,
     get_help_text,
     get_about_text,
-    remove_bracketed_text,
+    convert_Rich_style_to_html,
     go_to_next_student,
     return_to_previous_meeting,
     remove_last_student,
@@ -22,6 +22,15 @@ from zq.common import (
 )
 from zq.gui.line_edit import MyLineEdit
 from zq.settings import settings, open_settings_file, save_settings
+
+
+def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
+    """Formats and sets text for a QTextBrowser."""
+    # Each line must be appended individually because QTextBrowser.setText does
+    # not allow both HTML and newlines in the same string.
+    tb.clear()
+    for line in convert_Rich_style_to_html(text).split("\n"):
+        tb.append(line)
 
 
 class MyApp(QWidget):
@@ -73,7 +82,16 @@ class MyApp(QWidget):
         self.welcome.alignment = Qt.AlignLeft
         self.welcome.alignment = Qt.AlignVCenter
         self.welcome.setViewportMargins(25, 25, 25, 25)
-        self.welcome.setText(remove_bracketed_text(settings["welcome message"]))
+        set_QTextBrowser_text(self.welcome, settings["welcome message"])
+        self.welcome.setStyleSheet(
+            """
+                QTextBrowser {
+                    border: none;
+                    color: rgb(255, 255, 255);
+                    background-color: rgb(30, 30, 30);
+                }
+            """
+        )
 
         self.timer_message = QTextBrowser()
         self.timer_message.setAcceptRichText(True)
@@ -81,7 +99,18 @@ class MyApp(QWidget):
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
         self.timer_message.setViewportMargins(25, 25, 25, 25)
-        self.timer_message.setText("(no students in queue)")
+        self.timer_message.setStyleSheet(
+            """
+                QTextBrowser {
+                    border: none;
+                    color: rgb(255, 255, 255);
+                    background-color: rgb(30, 30, 30);
+                }
+            """
+        )
+        set_QTextBrowser_text(
+            self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
+        )
 
         self.layout = QGridLayout(self)
         self.layout.addWidget(self.welcome, 0, 0)
@@ -99,19 +128,20 @@ class MyApp(QWidget):
 
     def update_timer_message(self):
         if not self.student_names:
-            self.timer_message.setText("(no students in queue)")
+            set_QTextBrowser_text(
+            self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
+        )
             return
-        self.timer_message.setText(
-            remove_bracketed_text(
-                get_timer_message(
-                    self.current_mode,
-                    self.mode_names,
-                    self.student_names,
-                    self.group_seconds,
-                    self.individual_seconds,
-                    self.max_individual_seconds,
-                )
-            )
+        set_QTextBrowser_text(
+            self.timer_message,
+            get_timer_message(
+                self.current_mode,
+                self.mode_names,
+                self.student_names,
+                self.group_seconds,
+                self.individual_seconds,
+                self.max_individual_seconds,
+            ),
         )
 
     def remove_name(self):
@@ -200,18 +230,18 @@ class MyApp(QWidget):
     def handle_char_key_pressed(self, key: str):
         if key == "h":
             if self.__showing_help:
-                self.welcome.setText(remove_bracketed_text(settings["welcome message"]))
+                set_QTextBrowser_text(self.welcome, settings["welcome message"])
                 self.__showing_help = False
             else:
-                self.welcome.setText(remove_bracketed_text(get_help_text()))
+                set_QTextBrowser_text(self.welcome, get_help_text())
                 self.__showing_help = True
                 self.__showing_about = False
         elif key == "@":
             if self.__showing_about:
-                self.welcome.setText(remove_bracketed_text(settings["welcome message"]))
+                set_QTextBrowser_text(self.welcome, settings["welcome message"])
                 self.__showing_about = False
             else:
-                self.welcome.setText(remove_bracketed_text(get_about_text(VERSION)))
+                set_QTextBrowser_text(self.welcome, get_about_text(VERSION))
                 self.__showing_about = True
                 self.__showing_help = False
         elif key == "o":
@@ -286,12 +316,8 @@ class MyApp(QWidget):
         elif key == "s":
             self.save_all_students()
         if self.current_mode == Mode.START:
-            self.timer_message.setText(
-                remove_bracketed_text(settings["starting message"])
-            )
+            set_QTextBrowser_text(self.timer_message, settings["starting message"])
         elif self.current_mode == Mode.END:
-            self.timer_message.setText(
-                remove_bracketed_text(settings["ending message"])
-            )
+            set_QTextBrowser_text(self.timer_message, settings["ending message"])
         else:
             self.update_timer_message()

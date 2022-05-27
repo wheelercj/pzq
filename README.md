@@ -13,8 +13,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A clean look. No buttons on screen means no confusion for guests.
-* Choose between a GUI or a TUI (either a graphical or a textual user interface).
-* If you're using the TUI, you can easily add [color](https://rich.readthedocs.io/en/latest/appendix/colors.html) and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
+* Customize the color of text with [hex color codes](https://www.color-hex.com/) like this: [#00ff00]green[/#00ff00], [#00ffff]cyan[/#00ffff], [#fa1a1a]bright orange[/#fa1a1a].
 
 ## usage
 
