@@ -7,6 +7,9 @@ from zq.common import (
     add_5_minute_break,
     get_help_text,
     get_about_text,
+    go_to_next_student,
+    return_to_previous_meeting,
+    remove_last_student,
     VERSION,
 )
 from zq.settings import settings, save_settings, open_settings_file
@@ -68,21 +71,20 @@ class TimerApp(App):
             key, "name to remove: "
         )
         self.widgets.text_input_field.text = self.text_input.text
-        if name:
-            if name in self.widgets.timer.student_names:
-                if name == self.widgets.timer.student_names[0]:
-                    names = self.widgets.timer.student_names
-                    if len(names) > 1 and names[1].endswith("-minute break"):
-                        self.widgets.timer.individual_seconds = (
-                            int(names[1].split("-")[0]) * 60
-                        )
-                    else:
-                        self.widgets.timer.individual_seconds = (
-                            self.widgets.timer.max_individual_seconds
-                        )
-                self.widgets.timer.student_names.remove(name)
-                if not len(self.widgets.timer.student_names):
-                    self.widgets.timer.pause = True
+        names = self.widgets.timer.student_names
+        if name in names:
+            if name == names[0]:
+                if len(names) > 1 and names[1].endswith("-minute break"):
+                    self.widgets.timer.individual_seconds = (
+                        int(names[1].split("-")[0]) * 60
+                    )
+                else:
+                    self.widgets.timer.individual_seconds = (
+                        self.widgets.timer.max_individual_seconds
+                    )
+            names.remove(name)
+            if not len(names):
+                self.widgets.timer.pause = True
 
     def get_minutes_input(self, key: str) -> None:
         """Gets minutes input one key per call and updates the interface & settings.
@@ -143,11 +145,34 @@ class TimerApp(App):
             self.receiving_new_name_input = True
             self.widgets.text_input_field.text = "name: "
         elif key == "n" and len(self.widgets.timer.student_names) > 1:
-            self.go_to_next_student()
+            (
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+                self.widgets.timer.previous_individual_seconds,
+            ) = go_to_next_student(
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+                self.widgets.timer.max_individual_seconds,
+            )
         elif key == "z" and self.widgets.timer.previous_individual_seconds is not None:
-            self.return_to_previous_meeting()
+            (
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+                self.widgets.timer.previous_individual_seconds,
+            ) = return_to_previous_meeting(
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+                self.widgets.timer.previous_individual_seconds,
+            )
         elif key == "!":
-            self.remove_last_student()
+            (
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+            ) = remove_last_student(
+                self.widgets.timer.student_names,
+                self.widgets.timer.individual_seconds,
+                self.widgets.timer.max_individual_seconds,
+            )
         elif key == "?":  # remove student by name
             self.receiving_existing_name_input = True
             self.widgets.text_input_field.text = "name to remove: "
@@ -190,9 +215,13 @@ class TimerApp(App):
                 self.widgets.timer.individual_seconds = 0
         elif key == "r":
             # reset the timer
-            self.widgets.timer.individual_seconds = (
-                self.widgets.timer.max_individual_seconds
-            )
+            names = self.widgets.timer.student_names
+            if names and names[0].endswith("-minute break"):
+                self.widgets.timer.individual_seconds = int(names[0].split("-")[0]) * 60
+            else:
+                self.widgets.timer.individual_seconds = (
+                    self.widgets.timer.max_individual_seconds
+                )
             self.widgets.timer.pause = True
         elif key == "d":
             # change the individual meetings duration (in minutes)
@@ -225,40 +254,6 @@ class TimerApp(App):
             self.displaying_help = False
             await self.widgets.welcome.update(
                 settings["empty lines above"] * "\n" + get_about_text(VERSION)
-            )
-
-    def go_to_next_student(self) -> None:
-        """Rotates the queue forwards."""
-        names = self.widgets.timer.student_names
-        names.append(names.pop(0))
-        self.widgets.timer.previous_individual_seconds = (
-            self.widgets.timer.individual_seconds
-        )
-        if names[0].endswith("-minute break"):
-            self.widgets.timer.individual_seconds = int(names[0].split("-")[0]) * 60
-        else:
-            self.widgets.timer.individual_seconds = (
-                self.widgets.timer.max_individual_seconds
-            )
-
-    def return_to_previous_meeting(self) -> None:
-        """Rotates the queue backwards."""
-        temp = self.widgets.timer.individual_seconds
-        self.widgets.timer.individual_seconds = (
-            self.widgets.timer.previous_individual_seconds
-        )
-        self.widgets.timer.previous_individual_seconds = temp
-        self.widgets.timer.student_names.insert(
-            0, self.widgets.timer.student_names.pop()
-        )
-
-    def remove_last_student(self) -> None:
-        """Removes the last student from the queue."""
-        if len(self.widgets.timer.student_names):
-            self.widgets.timer.student_names.pop()
-        if len(self.widgets.timer.student_names) == 1:
-            self.widgets.timer.individual_seconds = (
-                self.widgets.timer.max_individual_seconds
             )
 
 

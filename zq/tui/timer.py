@@ -1,22 +1,9 @@
 from rich.align import Align  # https://github.com/Textualize/rich
 import chime  # https://pypi.org/project/chime/
-from enum import Enum
 from textual.widget import Widget
 import sqlite3
+from zq.common import Mode, get_timer_message
 from zq.settings import settings
-
-
-def format_time(seconds: int) -> str:
-    return f"{seconds // 60}:{seconds % 60:02}"
-
-
-class Mode(Enum):
-    """Meeting modes."""
-
-    GROUP = 0
-    INDIVIDUAL = 1
-    START = 2
-    END = 3
 
 
 class Timer(Widget):
@@ -44,7 +31,7 @@ class Timer(Widget):
 
     def save_all_students(self) -> None:
         """Saves all student names and the next's wait time to the database.
-        
+
         Every row of the seconds column receives the same number: the next student's
         wait time.
         """
@@ -74,7 +61,14 @@ class Timer(Widget):
             return Align.center(
                 settings["empty lines above"] * "\n" + "(no students in queue)"
             )
-        timer_message = self.get_timer_message()
+        timer_message = get_timer_message(
+            self.current_mode,
+            self.mode_names,
+            self.student_names,
+            self.group_seconds,
+            self.individual_seconds,
+            self.max_individual_seconds,
+        )
         return Align.center(settings["empty lines above"] * "\n" + "\n" + timer_message)
 
     def tick(self) -> None:
@@ -95,39 +89,3 @@ class Timer(Widget):
             chime.warning()
         elif self.individual_seconds == 1:
             chime.error()
-
-    def get_timer_message(self) -> str:
-        """Create the timer message."""
-        timer_message = (
-            f"[bright_black]{self.mode_names[self.current_mode.value]}[/bright_black]"
-        )
-        if self.current_mode == Mode.GROUP:
-            timer_message += (
-                f"       [bright_black]{format_time(self.group_seconds)}[/bright_black]"
-            )
-        timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
-        if self.current_mode == Mode.INDIVIDUAL and len(self.student_names) == 1:
-            timer_message += (
-                f"[bright_black]{format_time(self.individual_seconds)}[/bright_black] "
-            )
-        timer_message += f"[white]{self.student_names[0]}[/white]"
-        if len(self.student_names) > 1:
-            if self.current_mode == Mode.GROUP:
-                for i, name in enumerate(self.student_names[1:]):
-                    timer_message += f"\n[white]{name}[/white]"
-            elif self.current_mode == Mode.INDIVIDUAL:
-                timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
-                next_seconds = self.individual_seconds
-                break_previously = False
-                for i, name in enumerate(self.student_names[1:]):
-                    if i and not break_previously:
-                        next_seconds += self.max_individual_seconds
-                    timer_message += (
-                        f"{format_time(next_seconds)} [white]{name}[/white]\n\n"
-                    )
-                    if name.endswith("-minute break"):
-                        next_seconds += int(name.split("-minute break")[0]) * 60
-                        break_previously = True
-                    else:
-                        break_previously = False
-        return timer_message

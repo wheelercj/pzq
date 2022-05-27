@@ -1,9 +1,29 @@
+from enum import Enum
+import re
 import sqlite3
 from textwrap import dedent
 from typing import Tuple, List
 
 
 VERSION = "0.2.1"
+
+
+def format_time(seconds: int) -> str:
+    return f"{seconds // 60}:{seconds % 60:02}"
+
+
+def remove_bracketed_text(text: str) -> str:
+    """Removes text between brackets from a string."""
+    return re.sub(r"\[[^\]]*\]", "", text)
+
+
+class Mode(Enum):
+    """Meeting modes."""
+
+    GROUP = 0
+    INDIVIDUAL = 1
+    START = 2
+    END = 3
 
 
 def create_students_table() -> None:
@@ -99,3 +119,137 @@ def get_about_text(VERSION: str) -> str:
         [bright_black]You can close this message by pressing @ again.[/bright_black]
         """
     )
+
+
+def get_timer_message(
+    current_mode: Mode,
+    mode_names: List[str],
+    student_names: List[str],
+    group_seconds: int,
+    individual_seconds: int,
+    max_individual_seconds: int,
+) -> str:
+    """Creates the timer message."""
+    timer_message = f"[bright_black]{mode_names[current_mode.value]}[/bright_black]"
+    if current_mode == Mode.GROUP:
+        timer_message += (
+            f"       [bright_black]{format_time(group_seconds)}[/bright_black]"
+        )
+    timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
+    if current_mode == Mode.INDIVIDUAL and len(student_names) == 1:
+        timer_message += (
+            f"[bright_black]{format_time(individual_seconds)}[/bright_black] "
+        )
+    timer_message += f"[white]{student_names[0]}[/white]"
+    if len(student_names) > 1:
+        if current_mode == Mode.GROUP:
+            for i, name in enumerate(student_names[1:]):
+                timer_message += f"\n[white]{name}[/white]"
+        elif current_mode == Mode.INDIVIDUAL:
+            timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
+            next_seconds = individual_seconds
+            break_previously = False
+            for i, name in enumerate(student_names[1:]):
+                if i and not break_previously:
+                    next_seconds += max_individual_seconds
+                timer_message += (
+                    f"{format_time(next_seconds)} [white]{name}[/white]\n\n"
+                )
+                if name.endswith("-minute break"):
+                    next_seconds += int(name.split("-minute break")[0]) * 60
+                    break_previously = True
+                else:
+                    break_previously = False
+    return timer_message
+
+
+def go_to_next_student(
+    student_names: List[str], individual_seconds: int, max_individual_seconds: int
+) -> Tuple[List[str], int, int]:
+    """Rotates the queue forwards.
+
+    Parameters
+    ----------
+    student_names : List[str]
+        The list of student names.
+    individual_seconds : int
+        The number of seconds remaining for the individual meeting.
+    max_individual_seconds : int
+        The maximum individual meeting duration in seconds.
+
+    Returns
+    -------
+    List[str]
+        The list of student names.
+    int
+        The number of seconds in the group meeting.
+    int
+        The number of seconds in the individual meeting.
+    """
+    student_names.append(student_names.pop(0))
+    previous_individual_seconds = individual_seconds
+    if student_names[0].endswith("-minute break"):
+        individual_seconds = int(student_names[0].split("-")[0]) * 60
+    else:
+        individual_seconds = max_individual_seconds
+    return student_names, individual_seconds, previous_individual_seconds
+
+
+def return_to_previous_meeting(
+    student_names: List[str], individual_seconds: int, previous_individual_seconds: int
+) -> Tuple[List[str], int, int]:
+    """Rotates the queue backwards.
+
+    Parameters
+    ----------
+    student_names : List[str]
+        The list of students in the queue.
+    individual_seconds : int
+        The number of seconds remaining for the individual meeting.
+    previous_individual_seconds : int
+        The number of seconds remaining for the individual meeting before the last
+        meeting.
+
+    Returns
+    -------
+    List[str]
+        The list of students in the queue.
+    int
+        The individual meeting duration.
+    int
+        The individual meeting duration before the last student was removed.
+    """
+    individual_seconds, previous_individual_seconds = (
+        previous_individual_seconds,
+        individual_seconds,
+    )
+    student_names.insert(0, student_names.pop())
+    return student_names, individual_seconds, previous_individual_seconds
+
+
+def remove_last_student(
+    student_names: List[str], individual_seconds: int, max_individual_seconds: int
+) -> Tuple[List[str], int]:
+    """Removes the last student from the queue.
+
+    Parameters
+    ----------
+    student_names : List[str]
+        The list of students in the queue.
+    individual_seconds : int
+        The number of seconds remaining for the individual meeting.
+    max_individual_seconds : int
+        The maximum individual meeting duration in seconds.
+
+    Returns
+    -------
+    List[str]
+        The list of students in the queue.
+    int
+        The individual meeting duration.
+    """
+    if len(student_names):
+        student_names.pop()
+    if len(student_names) == 1:
+        individual_seconds = max_individual_seconds
+    return student_names, individual_seconds
