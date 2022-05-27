@@ -46,7 +46,10 @@ This app is currently only being provided as source code. With Python on your de
 
 ## third-party dependencies
 
+You can install these with `pip install -r requirements.txt`.
+
 * [PySide6](https://www.qt.io/qt-for-python) for the graphical user interface
 * [Textual](https://github.com/Textualize/textual) for the text user interface
 * [Rich](https://github.com/Textualize/rich), which is used by Textual
 * [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
+* [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) to save settings
