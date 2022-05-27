@@ -1,6 +1,6 @@
 # zq
 
-Easy Zoom queueing by sharing your screen.
+Easy Zoom queueing.
 
 Some meeting waitlists are confusing and isolating for those waiting for help, but this queueing app makes it easy to immediately bring everyone into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared for others to see the queue.
 
@@ -12,16 +12,19 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
+* A clean look. No buttons on screen means no confusion for guests.
+* Choose between a GUI or a TUI (either a graphical or a textual user interface).
 * If you're using the TUI, you can easily add [color](https://rich.readthedocs.io/en/latest/appendix/colors.html) and style to the welcome message and other text in settings using [Rich markup](https://rich.readthedocs.io/en/latest/markup.html).
 
 ## usage
 
-This app is currently only being provided as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 main.py` for Mac or Linux or `py main.py` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
+This app is currently only being provided as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 main.py` for Mac or Linux or `py main.py` for Windows while in the app's folder. This runs the TUI version of the app; to run the GUI version, use `python3 main.py gui` or `py main.py gui`. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
 
 ## keyboard shortcuts
 
 * `h` toggles keyboard shortcut help.
 * `@` shows info about this app.
+* `Ctrl` (or `Cmd`) and `+` or `-` to increase or decrease font size. Some terminals don't support this.
 * `o` opens the settings. Restart to apply changes.
 * `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.

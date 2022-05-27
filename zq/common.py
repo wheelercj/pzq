@@ -83,6 +83,7 @@ def get_help_text() -> str:
         [u][b]keyboard shortcuts:[/b][/u]
         [b][green]h[/green][/b] — toggles this help message.
         [b][green]@[/green][/b] — shows info about this app.
+        [b][green]Ctrl[/b][/green] (or [b][green]Cmd[/b][/green]) and [b][green]+[/b][/green] or [b][green]-[/b][/green] to increase or decrease font size. Some terminals don't support this.
         [b][green]o[/green][/b] — opens the settings file. Restart to apply changes.
         [b][green]a[/green][/b] — allows you to enter a student's name to add them to the queue.
         [b][green]n[/green][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.

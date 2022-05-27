@@ -24,8 +24,6 @@ class MyLineEdit(QLineEdit):
 
     def keyPressEvent(self, event) -> None:
         if self.isHidden():
-            # key = event.key()
-            # key_text = event.text()
             if event.key() == Qt.Key_Control:
                 self.__ctrl_pressed = True
             elif self.__ctrl_pressed and event.key() == Qt.Key_Equal:
@@ -34,17 +32,25 @@ class MyLineEdit(QLineEdit):
                 self.ctrl_minus_pressed.emit()
             else:
                 self.__ctrl_pressed = False
-            if event.text() in ('a', '?', 'd'):
+            if event.text() in ("a", "?", "d"):
                 self.setText("")
                 self.show()
-                if event.text() == 'a':
+                if event.text() == "a":
                     self.__receiving_new_name_input = True
-                elif event.text() == '?':
+                elif event.text() == "?":
                     self.__receiving_existing_name_input = True
-                elif event.text() == 'd':
+                elif event.text() == "d":
                     self.__receiving_minutes_input = True
             elif len(event.text()) == 1:
                 self.char_key_pressed.emit(event.text())
+            elif event.key() == Qt.Key_Left:
+                self.char_key_pressed.emit("left")
+            elif event.key() == Qt.Key_Right:
+                self.char_key_pressed.emit("right")
+            elif event.key() == Qt.Key_Home:
+                self.char_key_pressed.emit("home")
+            elif event.key() == Qt.Key_End:
+                self.char_key_pressed.emit("end")
         else:
             if event.key() == Qt.Key_Return:
                 self.hide()
