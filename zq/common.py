@@ -122,7 +122,7 @@ def get_help_text() -> str:
         [b][#008000]right[/#008000][/b] — subtracts [#ffffff]30[/#ffffff] seconds from the individual meetings timer.
         [b][#008000]r[/#008000][/b] — resets the individual meetings timer.
         [b][#008000]d[/#008000][/b] — allows you to change the individual meetings duration (in minutes).
-        [b][#008000]s[/#008000][/b] — saves student info; for if you have autosave disabled.
+        [b][#008000]s[/#008000][/b] — saves student info. Student info is automatically saved every [#ffffff]30[/#ffffff] seconds by default.
         """
     )
 
