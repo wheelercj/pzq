@@ -73,5 +73,5 @@ class MyLineEdit(QLineEdit):
                     self.setText("")
                 else:
                     self.setText(self.text()[:-1])
-            elif len(event.text()) == 1:
+            elif len(event.text()) == 1 and event.key() != Qt.Key_Delete:
                 self.setText(self.text() + event.text())
