@@ -5,7 +5,7 @@ from textwrap import dedent
 from typing import Tuple, List
 
 
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 color_pattern = re.compile(
     r"\[(?P<color>#[0-9a-fA-F]{6})\](?P<body>[^\[]*?)\[/#[0-9a-fA-F]{6}\]"
 )
