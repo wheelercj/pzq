@@ -19,7 +19,7 @@ def open_settings_file() -> None:
 __DEFAULT_SETTINGS = {
     "meeting minutes": 20,
     "transition seconds": 30,  # The time it takes to transition between meetings.
-    "save interval seconds": 3,  # The names and meeting timer are saved once per n seconds.
+    "save interval seconds": 30,  # The names and meeting timer are saved once per n seconds.
     "empty lines above": 4,  # Number of empty lines inserted above the messages.
     "welcome message": format_setting_string(
         """\
