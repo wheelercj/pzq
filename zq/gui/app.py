@@ -93,7 +93,7 @@ class MyApp(QWidget):
         self.timer_message.setOpenExternalLinks(True)
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
-        self.timer_message.setViewportMargins(25, 25, 25, 25)
+        self.timer_message.setViewportMargins(100, 25, 25, 25)
         self.timer_message.setStyleSheet(
             """
                 QTextBrowser {
