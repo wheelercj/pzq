@@ -27,7 +27,6 @@ class Timer(Widget):
 
     def on_mount(self) -> None:
         self.set_interval(1, self.refresh)
-        self.set_interval(settings["save interval seconds"], self.save_all_students)
 
     def save_all_students(self) -> None:
         """Saves all student names and the next's wait time to the database.

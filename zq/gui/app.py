@@ -40,11 +40,6 @@ class MyApp(QWidget):
         self.timer = QTimer(self)
         QObject.connect(self.timer, SIGNAL("timeout()"), self.tick)
         self.timer.start(1000)
-        self.autosave_timer = QTimer(self)
-        QObject.connect(
-            self.autosave_timer, SIGNAL("timeout()"), self.save_all_students
-        )
-        self.autosave_timer.start(settings["save interval seconds"])
         self.max_individual_seconds = (
             settings["meeting minutes"] * 60 + settings["transition seconds"]
         )
@@ -121,6 +116,9 @@ class MyApp(QWidget):
         self.setGeometry(100, 50, 800, 500)
         self.setContentsMargins(10, 10, 10, 10)
         self.show()
+
+    def __del__(self):
+        self.save_all_students()
 
     def append_name(self, name: str):
         self.student_names.append(name)

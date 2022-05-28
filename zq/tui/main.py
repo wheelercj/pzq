@@ -42,6 +42,10 @@ class TimerApp(App):
         ) = load_students(settings["meeting minutes"] + settings["transition seconds"])
         await self.view.dock(self.widgets)
 
+    async def shutdown(self):
+        self.widgets.timer.save_all_students()
+        await super().shutdown()
+
     def get_new_name_input(self, key: str) -> None:
         """Gets the name of a new student from the user, one key per call.
 
