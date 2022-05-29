@@ -13,7 +13,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A clean look. No buttons on screen means no confusion for guests.
-* Customize the color of text with [hex color codes](https://www.color-hex.com/) like this: [#00ff00]this text will be green[/#00ff00], [#fa1a1a]this will be bright orange[/#fa1a1a].
+* Customize the color of text in settings with [hex color codes](https://www.color-hex.com/) like this: [#00ff00]this text will be green[/#00ff00], [#fa1a1a]this will be bright orange[/#fa1a1a].
 
 ## usage
 
@@ -48,7 +48,5 @@ zq is currently only being provided as source code. With Python on your device, 
 You can install these with `pip install -r requirements.txt`.
 
 * [PySide6](https://www.qt.io/qt-for-python) for the graphical user interface
-* [Textual](https://github.com/Textualize/textual) for the text user interface
-* [Rich](https://github.com/Textualize/rich), which is used by Textual
 * [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
 * [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) to save settings

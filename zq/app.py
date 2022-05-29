@@ -1,6 +1,6 @@
 import chime  # https://pypi.org/project/chime/
 from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
-from PySide6.QtGui import QIcon, QFontDatabase, QFont
+from PySide6.QtGui import QIcon, QFont
 from PySide6.QtWidgets import (
     QWidget,
     QGridLayout,
@@ -21,7 +21,7 @@ from zq.common import (
     remove_last_student,
     VERSION,
 )
-from zq.gui.line_edit import MyLineEdit
+from zq.line_edit import MyLineEdit
 from zq.settings import settings, open_settings_file, save_settings
 
 
