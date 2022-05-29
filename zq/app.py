@@ -32,6 +32,7 @@ def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
     tb.clear()
     for line in convert_Rich_style_to_html(text).split("\n"):
         tb.append(line)
+    tb.scrollToAnchor("top")
 
 
 class MyApp(QWidget):
