@@ -73,6 +73,7 @@ class MyApp(QWidget):
         self.line_edit.char_key_pressed.connect(self.handle_char_key_pressed)
         self.line_edit.f11_key_pressed.connect(self.toggle_fullscreen)
         self.line_edit.ctrl_w_pressed.connect(self.close)
+        self.line_edit.ctrl_c_pressed.connect(self.copy)
 
         self.welcome = QTextBrowser()
         self.welcome.setAcceptRichText(True)
@@ -232,6 +233,12 @@ class MyApp(QWidget):
             self.showNormal()
         else:
             self.showMaximized()
+
+    def copy(self):
+        if self.welcome.hasFocus():
+            self.welcome.copy()
+        elif self.timer_message.hasFocus():
+            self.timer_message.copy()
 
     def handle_char_key_pressed(self, key: str):
         if key == "h":
