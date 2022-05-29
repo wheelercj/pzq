@@ -118,9 +118,9 @@ class MyApp(QWidget):
 
         self.setWindowTitle("zq")
         self.setWindowIcon(QIcon("docs/timer.svg"))
-        self.setGeometry(100, 50, 800, 500)
+        self.setGeometry(100, 50, 800, 500)  # This forces the window to open on a certain screen (the "primary" screen?).
         self.setContentsMargins(10, 10, 10, 10)
-        self.show()
+        self.showMaximized()
 
     def __del__(self):
         self.save_all_students()
