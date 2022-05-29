@@ -19,7 +19,6 @@ def open_settings_file() -> None:
 __DEFAULT_SETTINGS = {
     "meeting minutes": 20,
     "transition seconds": 30,  # The time it takes to transition between meetings.
-    "empty lines above": 4,  # Number of empty lines inserted above the messages.
     "welcome message": format_setting_string(
         """\
         Welcome to the LAVC computer science tutoring! My name is Chris Wheeler, and I
