@@ -103,25 +103,28 @@ def get_help_text() -> str:
         [u][b]keyboard shortcuts:[/b][/u]
         [b][#008000]h[/#008000][/b] — toggles this help message.
         [b][#008000]@[/#008000][/b] — shows info about this app.
-        [b][#008000]Ctrl[/#008000][/b] (or [b][#008000]Cmd[/#008000][/b]) and [b][#008000]+[/#008000][/b] or [b][#008000]-[/#008000][/b] to increase or decrease font size. Some terminals don't support this.
+        [b][#008000]+[/#008000][/b] — increases font size.
+        [b][#008000]-[/#008000][/b] — decreases font size.
         [b][#008000]o[/#008000][/b] — opens the settings file. Restart to apply changes.
         [b][#008000]a[/#008000][/b] — allows you to enter a student's name to add them to the queue.
         [b][#008000]n[/#008000][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
         [b][#008000]z[/#008000][/b] — undoes the previous [#008000]n[/#008000] key press.
         [b][#008000]![/#008000][/b] — removes the last student in the queue.
         [b][#008000]?[/#008000][/b] — removes a student from the queue by name.
-        [b][#008000]b[/#008000][/b] — adds a [#ffffff]5[/#ffffff] minute break to the end of the queue.
+        [b][#008000]b[/#008000][/b] — adds a 5 minute break to the end of the queue.
         [b][#008000]$[/#008000][/b] — randomizes the order of the queue.
         [b][#008000]m[/#008000][/b] — toggles the meeting mode between group and individual meetings.
         [b][#008000]home[/#008000][/b] — changes the meeting mode to display a message saying tutoring hours will start soon.
         [b][#008000]end[/#008000][/b] — changes the meeting mode to display a message saying tutoring hours will soon end.
         [b][#008000]k[/#008000][/b] or [b][#008000]space[/#008000][/b] — pauses/unpauses the individual meetings timer.
-        [b][#008000]j[/#008000][/b] — adds [#ffffff]5[/#ffffff] seconds to the individual meetings timer.
-        [b][#008000]l[/#008000][/b] — subtracts [#ffffff]5[/#ffffff] seconds from the individual meetings timer.
-        [b][#008000]left[/#008000][/b] — adds [#ffffff]30[/#ffffff] seconds to the individual meetings timer.
-        [b][#008000]right[/#008000][/b] — subtracts [#ffffff]30[/#ffffff] seconds from the individual meetings timer.
+        [b][#008000]j[/#008000][/b] — adds 5 seconds to the individual meetings timer.
+        [b][#008000]l[/#008000][/b] — subtracts 5 seconds from the individual meetings timer.
+        [b][#008000]left[/#008000][/b] — adds 30 seconds to the individual meetings timer.
+        [b][#008000]right[/#008000][/b] — subtracts 30 seconds from the individual meetings timer.
         [b][#008000]r[/#008000][/b] — resets the individual meetings timer.
         [b][#008000]d[/#008000][/b] — allows you to change the individual meetings duration (in minutes).
+        [b][#008000]Ctrl/Cmd+w[/#008000][/b] — closes the app.
+        [b][#008000]F11[/#008000][/b] — toggles fullscreen.
         """
     )
 
@@ -132,7 +135,7 @@ def get_about_text(VERSION: str) -> str:
         f"""\
         zq
         
-        version [#ffffff]{VERSION}[/#ffffff]
+        version {VERSION}
 
         Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
 
@@ -156,11 +159,11 @@ def get_timer_message(
     timer_message += "\n\n[u][b]meeting in progress with:[/b][/u]\n"
     if current_mode == Mode.INDIVIDUAL and len(student_names) == 1:
         timer_message += f"[#8E8E8E]{format_time(individual_seconds)}[/#8E8E8E] "
-    timer_message += f"[#ffffff]{student_names[0]}[/#ffffff]"
+    timer_message += f"{student_names[0]}"
     if len(student_names) > 1:
         if current_mode == Mode.GROUP:
             for i, name in enumerate(student_names[1:]):
-                timer_message += f"\n[#ffffff]{name}[/#ffffff]"
+                timer_message += f"\n{name}"
         elif current_mode == Mode.INDIVIDUAL:
             timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
             next_seconds = individual_seconds
@@ -169,7 +172,7 @@ def get_timer_message(
                 if i and not break_previously:
                     next_seconds += max_individual_seconds
                 timer_message += (
-                    f"[#00ff00]{format_time(next_seconds)}[/#00ff00] [#ffffff]{name}[/#ffffff]\n\n"
+                    f"[#00ff00]{format_time(next_seconds)}[/#00ff00] {name}\n\n"
                 )
                 if name.endswith("-minute break"):
                     next_seconds += int(name.split("-minute break")[0]) * 60

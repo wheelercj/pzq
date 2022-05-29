@@ -69,9 +69,9 @@ class MyApp(QWidget):
         self.line_edit.return_new_name.connect(self.append_name)
         self.line_edit.return_existing_name.connect(self.remove_name)
         self.line_edit.return_minutes.connect(self.change_minutes)
-        self.line_edit.ctrl_equal_pressed.connect(self.increase_font_size)
-        self.line_edit.ctrl_minus_pressed.connect(self.decrease_font_size)
         self.line_edit.char_key_pressed.connect(self.handle_char_key_pressed)
+        self.line_edit.f11_key_pressed.connect(self.toggle_fullscreen)
+        self.line_edit.ctrl_w_pressed.connect(self.close)
 
         self.welcome = QTextBrowser()
         self.welcome.setAcceptRichText(True)
@@ -230,6 +230,12 @@ class MyApp(QWidget):
         elif self.individual_seconds == 1:
             chime.error()
 
+    def toggle_fullscreen(self):
+        if self.isMaximized():
+            self.showNormal()
+        else:
+            self.showMaximized()
+
     def handle_char_key_pressed(self, key: str):
         if key == "h":
             if self.__showing_help:
@@ -318,6 +324,10 @@ class MyApp(QWidget):
             self.paused = True
         elif key == "s":
             self.save_all_students()
+        elif key in "=+":
+            self.increase_font_size()
+        elif key in "-_":
+            self.decrease_font_size()
         if self.current_mode == Mode.START:
             set_QTextBrowser_text(self.timer_message, settings["starting message"])
         elif self.current_mode == Mode.END:

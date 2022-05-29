@@ -23,7 +23,7 @@ zq is currently only being provided as source code. With Python on your device, 
 
 * `h` toggles keyboard shortcut help.
 * `@` shows info about this app.
-* `Ctrl` (or `Cmd`) and `+` or `-` to increase or decrease font size.
+* `+` or `-` to increase or decrease font size.
 * `o` opens the settings. Restart to apply changes.
 * `a` allows you to enter a student's name to add them to the queue.
 * `n` brings the next student to the front of the queue, and rotates the previously front student to the end.
@@ -42,6 +42,8 @@ zq is currently only being provided as source code. With Python on your device, 
 * `right arrow` subtracts 30 seconds from the individual meetings timer.
 * `r` resets the individual meetings timer.
 * `d` allows you to change the individual meetings duration (in minutes).
+* `Ctrl/Cmd+w` closes the app.
+* `F11` toggles fullscreen.
 
 ## third-party dependencies
 
