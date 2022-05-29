@@ -116,6 +116,7 @@ class MyApp(QWidget):
         self.layout.addWidget(self.line_edit, 1, 0, 1, 2)
 
         self.setWindowTitle("zq")
+        self.setWindowIcon(QIcon("docs/timer.svg"))
         self.setGeometry(100, 50, 800, 500)
         self.setContentsMargins(10, 10, 10, 10)
         self.show()
