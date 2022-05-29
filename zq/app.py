@@ -131,22 +131,26 @@ class MyApp(QWidget):
         self.update_timer_message()
 
     def update_timer_message(self):
-        if not self.student_names:
+        if self.current_mode == Mode.START:
+            set_QTextBrowser_text(self.timer_message, settings["starting message"])
+        elif self.current_mode == Mode.END:
+            set_QTextBrowser_text(self.timer_message, settings["ending message"])
+        elif not self.student_names:
             set_QTextBrowser_text(
             self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
         )
-            return
-        set_QTextBrowser_text(
-            self.timer_message,
-            get_timer_message(
-                self.current_mode,
-                self.mode_names,
-                self.student_names,
-                self.group_seconds,
-                self.individual_seconds,
-                self.max_individual_seconds,
-            ),
-        )
+        else:
+            set_QTextBrowser_text(
+                self.timer_message,
+                get_timer_message(
+                    self.current_mode,
+                    self.mode_names,
+                    self.student_names,
+                    self.group_seconds,
+                    self.individual_seconds,
+                    self.max_individual_seconds,
+                ),
+            )
 
     def remove_name(self):
         name = self.line_edit.text()
@@ -321,9 +325,4 @@ class MyApp(QWidget):
             self.increase_font_size()
         elif key in "-_":
             self.decrease_font_size()
-        if self.current_mode == Mode.START:
-            set_QTextBrowser_text(self.timer_message, settings["starting message"])
-        elif self.current_mode == Mode.END:
-            set_QTextBrowser_text(self.timer_message, settings["ending message"])
-        else:
-            self.update_timer_message()
+        self.update_timer_message()
