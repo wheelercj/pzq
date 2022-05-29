@@ -1,5 +1,6 @@
 import chime  # https://pypi.org/project/chime/
 from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
+from PySide6.QtGui import QIcon, QFontDatabase, QFont
 from PySide6.QtWidgets import (
     QWidget,
     QGridLayout,
@@ -74,6 +75,7 @@ class MyApp(QWidget):
         self.welcome = QTextBrowser()
         self.welcome.setAcceptRichText(True)
         self.welcome.setOpenExternalLinks(True)
+        self.welcome.setFont(QFont("Cascadia Code", 18))
         self.welcome.alignment = Qt.AlignLeft
         self.welcome.alignment = Qt.AlignVCenter
         self.welcome.setViewportMargins(25, 25, 25, 25)
@@ -91,6 +93,7 @@ class MyApp(QWidget):
         self.timer_message = QTextBrowser()
         self.timer_message.setAcceptRichText(True)
         self.timer_message.setOpenExternalLinks(True)
+        self.timer_message.setFont(QFont("Cascadia Code", 18))
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
         self.timer_message.setViewportMargins(100, 25, 25, 25)
