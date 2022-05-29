@@ -39,6 +39,7 @@ class MyApp(QWidget):
     def __init__(self):
         super().__init__()
         chime.theme("material")
+        self.__font_size = 18
         self.timer = QTimer(self)
         QObject.connect(self.timer, SIGNAL("timeout()"), self.tick)
         self.timer.start(1000)
@@ -76,7 +77,7 @@ class MyApp(QWidget):
         self.welcome = QTextBrowser()
         self.welcome.setAcceptRichText(True)
         self.welcome.setOpenExternalLinks(True)
-        self.welcome.setFont(QFont("Cascadia Code", 18))
+        self.welcome.setFont(QFont("Cascadia Code", self.__font_size))
         self.welcome.alignment = Qt.AlignLeft
         self.welcome.alignment = Qt.AlignVCenter
         self.welcome.setViewportMargins(25, 25, 25, 25)
@@ -94,7 +95,7 @@ class MyApp(QWidget):
         self.timer_message = QTextBrowser()
         self.timer_message.setAcceptRichText(True)
         self.timer_message.setOpenExternalLinks(True)
-        self.timer_message.setFont(QFont("Cascadia Code", 18))
+        self.timer_message.setFont(QFont("Cascadia Code", self.__font_size))
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
         self.timer_message.setViewportMargins(100, 25, 25, 25)
@@ -174,24 +175,16 @@ class MyApp(QWidget):
             save_settings()
 
     def increase_font_size(self):
-        font = self.timer_message.currentFont()
-        size = font.pointSize()
-        font.setPointSize(size + 2)
-        self.timer_message.setFont(font)
-        font = self.welcome.currentFont()
-        font.setPointSize(size + 2)
-        self.welcome.setFont(font)
+        self.__font_size += 2
+        self.welcome.setFont(QFont("Cascadia Code", self.__font_size))
+        self.timer_message.setFont(QFont("Cascadia Code", self.__font_size))
 
     def decrease_font_size(self):
-        font = self.timer_message.currentFont()
-        size = font.pointSize()
-        if size <= 2:
+        if self.__font_size <= 2:
             return
-        font.setPointSize(size - 2)
-        self.timer_message.setFont(font)
-        font = self.welcome.currentFont()
-        font.setPointSize(size - 2)
-        self.welcome.setFont(font)
+        self.__font_size -= 2
+        self.welcome.setFont(QFont("Cascadia Code", self.__font_size))
+        self.timer_message.setFont(QFont("Cascadia Code", self.__font_size))
 
     def save_all_students(self):
         """Saves all student names and the next's wait time to the database.
