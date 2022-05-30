@@ -56,6 +56,9 @@ class MyLineEdit(QLineEdit):
             elif event.key() == Qt.Key_End:
                 self.char_key_pressed.emit("end")
         else:
+            if event.key() == Qt.Key_Escape:
+                self.hide()
+                self.setText("")
             if event.key() == Qt.Key_Return:
                 self.hide()
                 if self.__receiving_new_name_input:
