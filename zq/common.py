@@ -7,7 +7,7 @@ from typing import Tuple, List
 
 VERSION = "0.3.0"
 color_pattern = re.compile(
-    r"\[(?P<color>#[0-9a-fA-F]{6})\](?P<body>[^\[]*?)\[/#[0-9a-fA-F]{6}\]"
+    r"\[(?P<color>#[0-9a-fA-F]{6})\](?P<body>[^\[]*?)\[/(?:#[0-9a-fA-F]{6})?\]"
 )
 
 
@@ -102,7 +102,7 @@ def get_help_text() -> str:
     """Returns the help text."""
     return dedent(
         """\
-        [u][b]keyboard shortcuts:[/b][/u]
+        <h3>keyboard shortcuts:</h3>
         [b][#008000]h[/#008000][/b] — toggles this help message.
         [b][#008000]@[/#008000][/b] — shows info about this app.
         [b][#008000]+[/#008000][/b] — increases font size.

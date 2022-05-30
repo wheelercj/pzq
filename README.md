@@ -13,7 +13,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A clean look. No buttons on screen means no confusion for guests.
-* Add style and color. In the settings you can change text style like this: [b]this will be bold[/b] and [u]this will be underlined[/u], and you can change the color using [hex color codes](https://www.color-hex.com/) like this: [#00ff00]this text will be green[/#00ff00], [#fa1a1a]this will be bright orange[/#fa1a1a].
+* Add style and color. In the settings you can change text style with HTML tags or like this: [b]this will be bold[/b] and [u]this will be underlined[/u], and you can change the color using [hex color codes](https://www.color-hex.com/) like this: [#00ff00]this text will be green[/], [#fa1a1a]this will be bright orange[/].
 
 ## usage
 
