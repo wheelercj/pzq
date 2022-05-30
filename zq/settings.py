@@ -106,7 +106,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.ending_message)
         layout.addWidget(buttons)
         self.setLayout(layout)
-        self.show()
+        self.showMaximized()
 
     def exec(self) -> bool:
         """Runs the settings dialog window.
