@@ -22,7 +22,7 @@ from zq.common import (
     VERSION,
 )
 from zq.line_edit import MyLineEdit
-from zq.settings import settings, open_settings_file, save_settings
+from zq.settings import settings, save_settings, SettingsDialog
 
 
 def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
@@ -120,7 +120,9 @@ class MyApp(QWidget):
 
         self.setWindowTitle("zq")
         self.setWindowIcon(QIcon("docs/timer.svg"))
-        self.setGeometry(100, 50, 800, 500)  # This forces the window to open on a certain screen (the "primary" screen?).
+        self.setGeometry(
+            100, 50, 800, 500
+        )  # This forces the window to open on a certain screen (the "primary" screen?).
         self.setContentsMargins(10, 10, 10, 10)
         self.showMaximized()
 
@@ -138,8 +140,8 @@ class MyApp(QWidget):
             set_QTextBrowser_text(self.timer_message, settings["ending message"])
         elif not self.student_names:
             set_QTextBrowser_text(
-            self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
-        )
+                self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
+            )
         else:
             set_QTextBrowser_text(
                 self.timer_message,
@@ -258,7 +260,15 @@ class MyApp(QWidget):
                 self.__showing_about = True
                 self.__showing_help = False
         elif key == "o":
-            open_settings_file()
+            self.line_edit.releaseKeyboard()
+            settings_dialog = SettingsDialog()
+            user_clicked_save = settings_dialog.exec()
+            if user_clicked_save:
+                if not self.__showing_help and not self.__showing_about:
+                    set_QTextBrowser_text(self.welcome, settings["welcome message"])
+                if self.current_mode in (Mode.START, Mode.END):
+                    self.update_timer_message()
+            self.line_edit.grabKeyboard()
         elif key == "n" and len(self.student_names):
             (
                 self.student_names,

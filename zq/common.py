@@ -27,7 +27,9 @@ def convert_Rich_style_to_html(text: str) -> str:
     <span style="color: #00ff00">text</span>
     and [b]text[/b] becomes <b>text</b>.
     """
-    text = color_pattern.sub(r'<span style="color: \g<color>;">\g<body></span>', text)
+    text = color_pattern.sub(
+        r'<span style="color: \g<color>;">\g<body></span>', text
+    )
     text = (
         text.replace("[b]", "<b>")
         .replace("[/b]", "</b>")
@@ -105,7 +107,7 @@ def get_help_text() -> str:
         [b][#008000]@[/#008000][/b] — shows info about this app.
         [b][#008000]+[/#008000][/b] — increases font size.
         [b][#008000]-[/#008000][/b] — decreases font size.
-        [b][#008000]o[/#008000][/b] — opens the settings file. Restart to apply changes.
+        [b][#008000]o[/#008000][/b] — opens the settings.
         [b][#008000]a[/#008000][/b] — allows you to enter a student's name to add them to the queue.
         [b][#008000]n[/#008000][/b] — brings the next student to the front of the queue, and rotates the previously front student to the end.
         [b][#008000]z[/#008000][/b] — undoes the previous [#008000]n[/#008000] key press.
@@ -125,6 +127,8 @@ def get_help_text() -> str:
         [b][#008000]d[/#008000][/b] — allows you to change the individual meetings duration (in minutes).
         [b][#008000]Ctrl/Cmd+w[/#008000][/b] — closes the app.
         [b][#008000]F11[/#008000][/b] — toggles fullscreen.
+
+        For more tips and help, visit <a style="color: white" href="https://github.com/wheelercj/zq">the GitHub page</a>.
         """
     )
 
@@ -137,7 +141,7 @@ def get_about_text(VERSION: str) -> str:
         
         version {VERSION}
 
-        Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at https://github.com/wheelercj/zq
+        Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at <a style="color: white" href="https://github.com/wheelercj/zq">github.com/wheelercj/zq</a>.
 
         [#8E8E8E]You can close this message by pressing @ again.[/#8E8E8E]
         """
