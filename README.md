@@ -44,11 +44,3 @@ zq is currently only being provided as source code. With Python on your device, 
 * `d` allows you to change the individual meetings duration (in minutes).
 * `Ctrl/Cmd+w` closes the app.
 * `F11` toggles fullscreen.
-
-## third-party dependencies
-
-You can install these with `pip install -r requirements.txt`.
-
-* [PySide6](https://www.qt.io/qt-for-python) for the graphical user interface
-* [chime](https://pypi.org/project/chime/) for notification sounds when a timer runs out
-* [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation) to save settings
