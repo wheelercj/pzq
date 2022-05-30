@@ -277,7 +277,11 @@ class MyApp(QWidget):
             ) = go_to_next_student(
                 self.student_names, self.individual_seconds, self.max_individual_seconds
             )
-        elif key == "z" and self.previous_individual_seconds is not None:
+        elif (
+            key == "z"
+            and self.previous_individual_seconds is not None
+            and self.student_names
+        ):
             (
                 self.student_names,
                 self.individual_seconds,
