@@ -4,7 +4,7 @@ Easy Zoom queueing.
 
 Some meeting waitlists are confusing and isolating for those waiting for help, but this queueing app makes it easy to immediately bring everyone into Zoom where they will see a welcome message and approximate wait times. zq only runs locally, so the user's screen must stay shared for others to see the queue.
 
-![demo](docs/demo1.png)
+![demo gif](https://media.giphy.com/media/Ccf6gfNpiIuKA8GA88/giphy.gif)
 
 ## features
 
