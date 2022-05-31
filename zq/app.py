@@ -1,6 +1,6 @@
 import chime  # https://pypi.org/project/chime/
 from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
-from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QIcon, QFont, QTextCharFormat
 from PySide6.QtWidgets import (
     QWidget,
     QGridLayout,
@@ -30,6 +30,7 @@ def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
     # Each line must be appended individually because QTextBrowser.setText does
     # not allow both HTML and newlines in the same string.
     tb.clear()
+    tb.setCurrentCharFormat(QTextCharFormat())
     for line in convert_Rich_style_to_html(text).split("\n"):
         tb.append(line)
     tb.scrollToAnchor("top")
