@@ -121,14 +121,14 @@ def get_help_text() -> str:
         [b][#008000]k[/#008000][/b] or [b][#008000]space[/#008000][/b] — pauses/unpauses the individual meetings timer.
         [b][#008000]j[/#008000][/b] — adds 5 seconds to the individual meetings timer.
         [b][#008000]l[/#008000][/b] — subtracts 5 seconds from the individual meetings timer.
-        [b][#008000]left[/#008000][/b] — adds 30 seconds to the individual meetings timer.
-        [b][#008000]right[/#008000][/b] — subtracts 30 seconds from the individual meetings timer.
+        [b][#008000]left arrow[/#008000][/b] — adds 30 seconds to the individual meetings timer.
+        [b][#008000]right arrow[/#008000][/b] — subtracts 30 seconds from the individual meetings timer.
         [b][#008000]r[/#008000][/b] — resets the individual meetings timer.
         [b][#008000]d[/#008000][/b] — allows you to change the individual meetings duration (in minutes).
         [b][#008000]Ctrl/Cmd+w[/#008000][/b] — closes the app.
         [b][#008000]F11[/#008000][/b] — toggles fullscreen.
 
-        For more tips and help, visit <a style="color: white" href="https://github.com/wheelercj/zq">the GitHub page</a>.
+        For more tips and help, visit <a style="color: white" href="https://github.com/wheelercj/zq">zq's GitHub page</a>.
         """
     )
 
@@ -143,7 +143,7 @@ def get_about_text(VERSION: str) -> str:
 
         Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at <a style="color: white" href="https://github.com/wheelercj/zq">github.com/wheelercj/zq</a>.
 
-        [#8E8E8E]You can close this message by pressing @ again.[/#8E8E8E]
+        [#8E8E8E]You can close this by pressing @ again.[/#8E8E8E]
         """
     )
 
