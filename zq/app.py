@@ -43,17 +43,12 @@ class MyApp(QWidget):
         self.timer = QTimer(self)
         QObject.connect(self.timer, SIGNAL("timeout()"), self.tick)
         self.timer.start(1000)
-        self.max_individual_seconds = (
-            settings["meeting minutes"] * 60 + settings["transition seconds"]
-        )
+        self.max_individual_seconds = 0
+        self.update_max_individual_seconds()
         self.min_empty_waitlist_seconds = settings["meeting minutes"] / 2 * 60
         self.group_seconds = 0  # counts up
-        self.mode_names = [
-            "group meeting",
-            f"{settings['meeting minutes']}-minute individual meetings",
-            "start",
-            "end",
-        ]
+        self.mode_names = []
+        self.update_mode_names()
         self.current_mode = Mode.GROUP
         (self.student_names, self.individual_seconds) = load_students(
             self.max_individual_seconds
@@ -133,6 +128,20 @@ class MyApp(QWidget):
         self.student_names.append(name)
         self.update_timer_message()
 
+    def update_mode_names(self):
+        self.mode_names = [0] * len(Mode)
+        self.mode_names[Mode.GROUP.value] = "group meeting"
+        self.mode_names[
+            Mode.INDIVIDUAL.value
+        ] = f"{settings['meeting minutes']}-minute individual meetings"
+        self.mode_names[Mode.START.value] = "start"
+        self.mode_names[Mode.END.value] = "end"
+
+    def update_max_individual_seconds(self):
+        self.max_individual_seconds = (
+            settings["meeting minutes"] * 60 + settings["transition seconds"]
+        )
+
     def update_timer_message(self):
         if self.current_mode == Mode.START:
             set_QTextBrowser_text(self.timer_message, settings["starting message"])
@@ -171,13 +180,9 @@ class MyApp(QWidget):
         minutes = self.line_edit.text()
         if minutes.isdigit() and int(minutes) > 0:
             settings["meeting minutes"] = int(minutes)
-            self.max_individual_seconds = (
-                int(minutes) * 60 + settings["transition seconds"]
-            )
+            self.update_max_individual_seconds()
             self.min_empty_waitlist_seconds = int(minutes) / 2 * 60
-            self.mode_names[
-                Mode.INDIVIDUAL.value
-            ] = f"{minutes}-minute individual meetings"
+            self.update_mode_names()
             self.update_timer_message()
             save_settings()
 
@@ -266,8 +271,9 @@ class MyApp(QWidget):
             if user_clicked_save:
                 if not self.__showing_help and not self.__showing_about:
                     set_QTextBrowser_text(self.welcome, settings["welcome message"])
-                if self.current_mode in (Mode.START, Mode.END):
-                    self.update_timer_message()
+                self.update_mode_names()
+                self.update_max_individual_seconds()
+                self.update_timer_message()
             self.line_edit.grabKeyboard()
         elif key == "n" and len(self.student_names):
             (
