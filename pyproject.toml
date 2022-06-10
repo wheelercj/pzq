@@ -14,8 +14,7 @@ icon = "src/zq/resources/timer"
 sources = ['src/zq']
 requires = [
     'pyside6==6.2.2',
-    'chime==0.6.0',
-    'pyyaml==6.0'
+    'chime==0.6.0'
 ]
 
 

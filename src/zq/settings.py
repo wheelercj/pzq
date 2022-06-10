@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 from textwrap import dedent
-import yaml  # https://pyyaml.org/wiki/PyYAMLDocumentation
+import json
 
 
 def format_setting_string(message: str) -> str:
@@ -49,24 +49,24 @@ settings = {}
 
 
 def save_settings() -> None:
-    with open("settings.yaml", "w") as file:
-        yaml.dump(settings, file, indent=4)
+    with open("settings.json", "w", encoding='utf8') as file:
+        json.dump(settings, file)
 
 
 def load_settings() -> None:
-    """Load settings from the settings.yaml file.
+    """Load settings from the settings.json file.
 
     If the file does not exist or cannot be parsed, the default settings are used.
     """
     try:
-        with open("settings.yaml", "r") as file:
-            settings.update(yaml.load(file, Loader=yaml.FullLoader))
+        with open("settings.json", "r", encoding='utf8') as file:
+            settings.update(json.load(file))
     except (FileNotFoundError):
-        print("Could not find settings.yaml. Creating the file with defaults.")
+        print("Could not find settings.json. Creating the file with defaults.")
         settings.update(__DEFAULT_SETTINGS)
         save_settings()
-    except (yaml.YAMLError):
-        print("Could not parse settings.yaml. Using default settings.")
+    except (json.decoder.JSONDecodeError):
+        print("Could not parse settings.json. Using default settings.")
         settings.update(__DEFAULT_SETTINGS)
 
 
