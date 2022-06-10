@@ -1,0 +1,39 @@
+[tool.briefcase]
+project_name = "zq"
+bundle = "chris.wheeler.zq-timer"
+version = "0.3.0"
+url = "https://github.com/wheelercj/zq"
+license = "MIT license"
+author = 'Chris Wheeler'
+author_email = "christopher.wheeler.320@my.csun.edu"
+
+[tool.briefcase.app.zq]
+formal_name = "zq"
+description = "Easy Zoom queueing."
+icon = "src/zq/resources/timer"
+sources = ['src/zq']
+requires = [
+    'pyside6==6.2.2',
+    'chime==0.6.0',
+    'pyyaml==6.0'
+]
+
+
+[tool.briefcase.app.zq.macOS]
+requires = [
+    'std-nslog==1.0.0'
+]
+
+[tool.briefcase.app.zq.linux]
+requires = []
+system_requires = []
+
+[tool.briefcase.app.zq.windows]
+requires = []
+
+# Mobile deployments
+[tool.briefcase.app.zq.iOS]
+supported = false
+
+[tool.briefcase.app.zq.android]
+supported = false

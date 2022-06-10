@@ -2,27 +2,48 @@ import chime  # https://pypi.org/project/chime/
 from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
 from PySide6.QtGui import QIcon, QFont, QTextCharFormat
 from PySide6.QtWidgets import (
-    QWidget,
     QGridLayout,
     QTextBrowser,
+    QWidget,
 )
 import random
 import sqlite3
-from zq.common import (
-    Mode,
-    load_students,
-    get_timer_message,
-    add_5_minute_break,
-    get_help_text,
-    get_about_text,
-    convert_Rich_style_to_html,
-    go_to_next_student,
-    return_to_previous_meeting,
-    remove_last_student,
-    VERSION,
-)
-from zq.line_edit import MyLineEdit
-from zq.settings import settings, save_settings, SettingsDialog
+try:
+    from common import (
+        add_5_minute_break,
+        convert_Rich_style_to_html,
+        get_about_text,
+        get_help_text,
+        get_timer_message,
+        go_to_next_student,
+        load_students,
+        Mode,
+        remove_last_student,
+        return_to_previous_meeting,
+        VERSION,
+    )
+except ImportError:
+    from .common import (
+        add_5_minute_break,
+        convert_Rich_style_to_html,
+        get_about_text,
+        get_help_text,
+        get_timer_message,
+        go_to_next_student,
+        load_students,
+        Mode,
+        remove_last_student,
+        return_to_previous_meeting,
+        VERSION,
+    )
+try:
+    from line_edit import MyLineEdit
+except ImportError:
+    from .line_edit import MyLineEdit
+try:
+    from settings import settings, save_settings, SettingsDialog
+except ImportError:
+    from .settings import settings, save_settings, SettingsDialog
 
 
 def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
@@ -36,7 +57,7 @@ def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
     tb.scrollToAnchor("top")
 
 
-class MyApp(QWidget):
+class ZQ(QWidget):
     def __init__(self):
         super().__init__()
         chime.theme("material")
@@ -115,7 +136,7 @@ class MyApp(QWidget):
         self.layout.addWidget(self.line_edit, 1, 0, 1, 2)
 
         self.setWindowTitle("zq")
-        self.setWindowIcon(QIcon("docs/timer.svg"))
+        self.setWindowIcon(QIcon("src/zq/resources/timer.svg"))
         self.setGeometry(
             100, 50, 800, 500
         )  # This forces the window to open on a certain screen (the "primary" screen?).
