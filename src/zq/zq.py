@@ -1,4 +1,5 @@
 import chime  # https://pypi.org/project/chime/
+import os
 from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
 from PySide6.QtGui import QIcon, QFont, QTextCharFormat
 from PySide6.QtWidgets import (
@@ -136,7 +137,10 @@ class ZQ(QWidget):
         self.layout.addWidget(self.line_edit, 1, 0, 1, 2)
 
         self.setWindowTitle("zq")
-        self.setWindowIcon(QIcon("src/zq/resources/timer.svg"))
+        if os.path.exists("app"):
+            self.setWindowIcon(QIcon("app/zq/resources/timer.svg"))
+        else:
+            self.setWindowIcon(QIcon("src/zq/resources/timer.svg"))
         self.setGeometry(
             100, 50, 800, 500
         )  # This forces the window to open on a certain screen (the "primary" screen?).
