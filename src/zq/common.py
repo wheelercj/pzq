@@ -143,6 +143,8 @@ def get_about_text(VERSION: str) -> str:
 
         Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at <a style="color: white" href="https://github.com/wheelercj/zq">github.com/wheelercj/zq</a>.
 
+        <a style="color: white" href="https://github.com/wheelercj/zq/releases">Check for updates.</a>
+
         [#8E8E8E]You can close this by pressing @ again.[/#8E8E8E]
         """
     )
