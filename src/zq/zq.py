@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 )
 import random
 import sqlite3
-from sys import platform
+
 try:
     from common import (
         add_5_minute_break,
@@ -93,17 +93,10 @@ class ZQ(QWidget):
         self.line_edit.ctrl_w_pressed.connect(self.close)
         self.line_edit.ctrl_c_pressed.connect(self.copy)
 
-        if platform == "darwin":
-            self.__default_font = "Menlo"
-        else:
-            self.__default_font = "DejaVu Sans Mono"
-        self.__font = self.__default_font
-        self.__font_size = 22
-
         self.welcome = QTextBrowser()
         self.welcome.setAcceptRichText(True)
         self.welcome.setOpenExternalLinks(True)
-        self.welcome.setFont(QFont(self.__font, self.__font_size))
+        self.welcome.setFont(QFont(settings["font"], settings["font size"]))
         self.welcome.alignment = Qt.AlignLeft
         self.welcome.alignment = Qt.AlignVCenter
         self.welcome.setViewportMargins(25, 25, 25, 25)
@@ -121,7 +114,7 @@ class ZQ(QWidget):
         self.timer_message = QTextBrowser()
         self.timer_message.setAcceptRichText(True)
         self.timer_message.setOpenExternalLinks(True)
-        self.timer_message.setFont(QFont(self.__font, self.__font_size))
+        self.timer_message.setFont(QFont(settings["font"], settings["font size"]))
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
         self.timer_message.setViewportMargins(100, 25, 25, 25)
@@ -160,6 +153,10 @@ class ZQ(QWidget):
     def append_name(self, name: str):
         self.student_names.append(name)
         self.update_timer_message()
+
+    def update_font(self):
+        self.welcome.setFont(QFont(settings["font"], settings["font size"]))
+        self.timer_message.setFont(QFont(settings["font"], settings["font size"]))
 
     def update_mode_names(self):
         self.mode_names = [0] * len(Mode)
@@ -220,16 +217,14 @@ class ZQ(QWidget):
             save_settings()
 
     def increase_font_size(self):
-        self.__font_size += 1
-        self.welcome.setFont(QFont(self.__font, self.__font_size))
-        self.timer_message.setFont(QFont(self.__font, self.__font_size))
+        settings["font size"] += 1
+        self.update_font()
 
     def decrease_font_size(self):
-        if self.__font_size <= 1:
+        if settings["font size"] <= 1:
             return
-        self.__font_size -= 1
-        self.welcome.setFont(QFont(self.__font, self.__font_size))
-        self.timer_message.setFont(QFont(self.__font, self.__font_size))
+        settings["font size"] -= 1
+        self.update_font()
 
     def save_all_students(self):
         """Saves all student names and the next's wait time to the database.
@@ -304,6 +299,7 @@ class ZQ(QWidget):
             if user_clicked_save:
                 if not self.__showing_help and not self.__showing_about:
                     set_QTextBrowser_text(self.welcome, settings["welcome message"])
+                self.update_font()
                 self.update_mode_names()
                 self.update_max_individual_seconds()
                 self.update_timer_message()

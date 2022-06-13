@@ -1,14 +1,17 @@
+import json
 from PySide6.QtCore import SIGNAL
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
+    QFontDialog,
     QDialog,
     QDialogButtonBox,
     QLabel,
     QLineEdit,
+    QPushButton,
     QTextEdit,
     QVBoxLayout,
 )
 from textwrap import dedent
-import json
 
 
 def format_setting_string(message: str) -> str:
@@ -17,6 +20,8 @@ def format_setting_string(message: str) -> str:
 
 
 __DEFAULT_SETTINGS = {
+    "font": "DejaVu Sans Mono",
+    "font size": 22,
     "meeting minutes": 20,
     "transition seconds": 30,  # The time it takes to transition between meetings.
     "welcome message": format_setting_string(
@@ -49,7 +54,7 @@ settings = {}
 
 
 def save_settings() -> None:
-    with open("settings.json", "w", encoding='utf8') as file:
+    with open("settings.json", "w", encoding="utf8") as file:
         json.dump(settings, file)
 
 
@@ -59,8 +64,11 @@ def load_settings() -> None:
     If the file does not exist or cannot be parsed, the default settings are used.
     """
     try:
-        with open("settings.json", "r", encoding='utf8') as file:
+        with open("settings.json", "r", encoding="utf8") as file:
             settings.update(json.load(file))
+        for key in __DEFAULT_SETTINGS:
+            if key not in settings:
+                settings[key] = __DEFAULT_SETTINGS[key]
     except (FileNotFoundError):
         print("Could not find settings.json. Creating the file with defaults.")
         settings.update(__DEFAULT_SETTINGS)
@@ -78,11 +86,11 @@ class SettingsDialog(QDialog):
         super().__init__()
         self.setWindowTitle("zq settings")
         self.setGeometry(100, 50, 800, 500)
-        buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
-        buttons.connect(buttons, SIGNAL("accepted()"), self.accept)
-        buttons.connect(buttons, SIGNAL("rejected()"), self.reject)
-
         layout = QVBoxLayout()
+
+        self.font_ = None
+        font_button = QPushButton("change font", self)
+        font_button.clicked.connect(self.change_font)
         self.meeting_minutes = QLineEdit()
         self.meeting_minutes.setText(str(settings["meeting minutes"]))
         self.transition_seconds = QLineEdit()
@@ -94,6 +102,7 @@ class SettingsDialog(QDialog):
         self.ending_message = QTextEdit()
         self.ending_message.setText(settings["ending message"])
 
+        layout.addWidget(font_button)
         layout.addWidget(QLabel("meeting minutes:"))
         layout.addWidget(self.meeting_minutes)
         layout.addWidget(QLabel("transition seconds:"))
@@ -104,9 +113,14 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.starting_message)
         layout.addWidget(QLabel("ending message:"))
         layout.addWidget(self.ending_message)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
+        buttons.connect(buttons, SIGNAL("accepted()"), self.accept)
+        buttons.connect(buttons, SIGNAL("rejected()"), self.reject)
         layout.addWidget(buttons)
+
         self.setLayout(layout)
-        self.showMaximized()
+        self.show()
 
     def exec(self) -> bool:
         """Runs the settings dialog window.
@@ -117,6 +131,9 @@ class SettingsDialog(QDialog):
         super().exec()
         if self.result() != QDialog.Accepted:
             return False
+        if self.font_ is not None:
+            settings["font"] = self.font_.family()
+            settings["font size"] = self.font_.pointSize()
         try:
             settings["meeting minutes"] = int(self.meeting_minutes.text())
         except ValueError:
@@ -130,3 +147,10 @@ class SettingsDialog(QDialog):
         settings["ending message"] = self.ending_message.toPlainText()
         save_settings()
         return True
+
+    def change_font(self) -> None:
+        ok, font_ = QFontDialog.getFont(
+            QFont(settings["font"], settings["font size"]), self
+        )
+        if ok:
+            self.font_ = font_
