@@ -13,7 +13,7 @@ description = "Easy Zoom queueing."
 icon = "src/zq/resources/timer"
 sources = ['src/zq']
 requires = [
-    'pyside6==6.2.2',
+    'pyside6==6.3.0',
     'chime==0.6.0'
 ]
 
