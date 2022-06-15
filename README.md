@@ -8,18 +8,18 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 ## features
 
-* Simple controls with a smart queue. For example, the timers automatically pause, unpause, or reset in many situations when they should.
+* Simple controls with a smart queue. The timers automatically pause, unpause, or reset in many situations when they should.
 * A sound notifies you when a timer has run out.
 * Names and wait times are saved automatically so the app can be restarted any time if needed.
 * Many intuitive keyboard shortcuts (see below), but you will probably only need a few of them.
 * A clean look. No buttons on screen means no confusion for guests.
 * Add style and color. In the settings you can change text style with HTML tags or like this: [b]this will be bold[/b] and [u]this will be underlined[/u], and you can change the color using [hex color codes](https://www.color-hex.com/) like this: [#00ff00]this text will be green[/], [#fa1a1a]this will be bright orange[/].
 
-## usage
+## download
 
-Download zq for Windows here: https://github.com/wheelercj/zq/releases.
+Download zq here: https://github.com/wheelercj/zq/releases.
 
-zq is also available for Mac, Linux, and Windows as source code. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 src/zq` for Mac or Linux or `py src/zq` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
+Currently, an installer is available for Windows and the source code is available to run on Mac, Linux, and Windows. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 src/zq` for Mac or Linux or `py src/zq` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
 
 ## keyboard shortcuts
 
