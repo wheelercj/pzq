@@ -6,6 +6,8 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 ![demo gif](https://media.giphy.com/media/Ccf6gfNpiIuKA8GA88/giphy.gif)
 
+[![zq demo video](images/video_thumbnail.png)](https://www.youtube.com/watch?v=7DlZEQXcjiI)
+
 ## features
 
 * Simple controls with a smart queue. The timers automatically pause, unpause, or reset in many situations when they should.
