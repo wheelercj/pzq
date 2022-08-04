@@ -1,8 +1,9 @@
-from enum import Enum
 import re
 import sqlite3
+from enum import Enum
 from textwrap import dedent
-from typing import Tuple, List
+from typing import List
+from typing import Tuple
 
 
 VERSION = "1.0.0"
@@ -27,9 +28,7 @@ def convert_Rich_style_to_html(text: str) -> str:
     <span style="color: #00ff00">text</span>
     and [b]text[/b] becomes <b>text</b>.
     """
-    text = color_pattern.sub(
-        r'<span style="color: \g<color>;">\g<body></span>', text
-    )
+    text = color_pattern.sub(r'<span style="color: \g<color>;">\g<body></span>', text)
     text = (
         text.replace("[b]", "<b>")
         .replace("[/b]", "</b>")
@@ -129,7 +128,7 @@ def get_help_text() -> str:
         [b][#008000]F11[/#008000][/b] — toggles fullscreen.
 
         For more tips and help, visit <a style="color: white" href="https://github.com/wheelercj/zq">zq's GitHub page</a>.
-        """
+        """  # noqa
     )
 
 
@@ -138,7 +137,7 @@ def get_about_text(VERSION: str) -> str:
     return dedent(
         f"""\
         zq
-        
+
         version {VERSION}
 
         Developed by Chris Wheeler and licensed under the MIT license. This app is free and open source. You can find the source code and license, join discussions, submit bug reports or feature requests, and more at <a style="color: white" href="https://github.com/wheelercj/zq">github.com/wheelercj/zq</a>.
@@ -146,7 +145,7 @@ def get_about_text(VERSION: str) -> str:
         <a style="color: white" href="https://github.com/wheelercj/zq/releases">Check for updates.</a>
 
         [#8E8E8E]You can close this by pressing @ again.[/#8E8E8E]
-        """
+        """  # noqa
     )
 
 
@@ -171,7 +170,7 @@ def get_timer_message(
             for i, name in enumerate(student_names[1:]):
                 timer_message += f"\n{name}"
         elif current_mode == Mode.INDIVIDUAL:
-            timer_message += f"\n\n[u][b]waiting:[/b][/u]\n"
+            timer_message += "\n\n[u][b]waiting:[/b][/u]\n"
             next_seconds = individual_seconds
             break_previously = False
             for i, name in enumerate(student_names[1:]):

@@ -8,6 +8,7 @@ except ImportError:
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QColor
+
 try:
     from zq import ZQ
 except ImportError:

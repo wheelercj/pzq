@@ -1,17 +1,16 @@
 import json
+from textwrap import dedent
+
 from PySide6.QtCore import SIGNAL
 from PySide6.QtGui import QFont
-from PySide6.QtWidgets import (
-    QFontDialog,
-    QDialog,
-    QDialogButtonBox,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTextEdit,
-    QVBoxLayout,
-)
-from textwrap import dedent
+from PySide6.QtWidgets import QDialog
+from PySide6.QtWidgets import QDialogButtonBox
+from PySide6.QtWidgets import QFontDialog
+from PySide6.QtWidgets import QLabel
+from PySide6.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QPushButton
+from PySide6.QtWidgets import QTextEdit
+from PySide6.QtWidgets import QVBoxLayout
 
 
 def format_setting_string(message: str) -> str:
@@ -28,7 +27,7 @@ __DEFAULT_SETTINGS = {
         """\
         Welcome to the LAVC computer science tutoring! My name is Chris Wheeler, and I
         am a computer science student at CSUN and an alumnus of LAVC.
-        
+
         I might be in a breakout room right now, but I will be back soon. You can see
         your approximate wait time on the right.
         """
@@ -41,7 +40,7 @@ __DEFAULT_SETTINGS = {
     "ending message": format_setting_string(
         """\
         [u][b]wrapping up[/b][/u]
-        
+
         Tutoring hours are now ending. You can find the next time I will be tutoring on
         Penji. If you have questions before then, you can contact me at
         wheelecj@lavc.edu

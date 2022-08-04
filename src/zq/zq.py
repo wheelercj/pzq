@@ -1,14 +1,18 @@
-import chime  # https://pypi.org/project/chime/
 import os
-from PySide6.QtCore import Qt, QTimer, QObject, SIGNAL
-from PySide6.QtGui import QIcon, QFont, QTextCharFormat
-from PySide6.QtWidgets import (
-    QGridLayout,
-    QTextBrowser,
-    QWidget,
-)
 import random
 import sqlite3
+
+import chime  # https://pypi.org/project/chime/
+from PySide6.QtCore import QObject
+from PySide6.QtCore import Qt
+from PySide6.QtCore import QTimer
+from PySide6.QtCore import SIGNAL
+from PySide6.QtGui import QFont
+from PySide6.QtGui import QIcon
+from PySide6.QtGui import QTextCharFormat
+from PySide6.QtWidgets import QGridLayout
+from PySide6.QtWidgets import QTextBrowser
+from PySide6.QtWidgets import QWidget
 
 try:
     from common import (
