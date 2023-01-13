@@ -3,10 +3,8 @@ import random
 import sqlite3
 
 import chime  # https://pypi.org/project/chime/
-from PySide6.QtCore import QObject
 from PySide6.QtCore import Qt
 from PySide6.QtCore import QTimer
-from PySide6.QtCore import SIGNAL
 from PySide6.QtGui import QFont
 from PySide6.QtGui import QIcon
 from PySide6.QtGui import QTextCharFormat
@@ -68,7 +66,7 @@ class ZQ(QWidget):
         super().__init__()
         chime.theme("material")
         self.timer = QTimer(self)
-        QObject.connect(self.timer, SIGNAL("timeout()"), self.tick)
+        self.timer.timeout.connect(self.tick)
         self.timer.start(1000)
         self.max_individual_seconds = 0
         self.update_max_individual_seconds()

@@ -1,7 +1,6 @@
 import json
 from textwrap import dedent
 
-from PySide6.QtCore import SIGNAL
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QDialog
 from PySide6.QtWidgets import QDialogButtonBox
@@ -114,8 +113,8 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.ending_message)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
-        buttons.connect(buttons, SIGNAL("accepted()"), self.accept)
-        buttons.connect(buttons, SIGNAL("rejected()"), self.reject)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
         self.setLayout(layout)
