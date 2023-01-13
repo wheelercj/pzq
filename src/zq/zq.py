@@ -105,15 +105,6 @@ class ZQ(QWidget):
         self.welcome.alignment = Qt.AlignVCenter
         self.welcome.setViewportMargins(25, 25, 25, 25)
         set_QTextBrowser_text(self.welcome, settings["welcome message"])
-        self.welcome.setStyleSheet(
-            """
-                QTextBrowser {
-                    border: none;
-                    color: rgb(255, 255, 255);
-                    background-color: rgb(30, 30, 30);
-                }
-            """
-        )
 
         self.timer_message = QTextBrowser()
         self.timer_message.setAcceptRichText(True)
@@ -122,15 +113,6 @@ class ZQ(QWidget):
         self.timer_message.alignment = Qt.AlignLeft
         self.timer_message.alignment = Qt.AlignVCenter
         self.timer_message.setViewportMargins(100, 25, 25, 25)
-        self.timer_message.setStyleSheet(
-            """
-                QTextBrowser {
-                    border: none;
-                    color: rgb(255, 255, 255);
-                    background-color: rgb(30, 30, 30);
-                }
-            """
-        )
         set_QTextBrowser_text(
             self.timer_message, "[#8E8E8E](no students in queue)[/#8E8E8E]"
         )

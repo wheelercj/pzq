@@ -28,6 +28,15 @@ def main():
     QApplication.setApplicationName(metadata["Formal-Name"])
 
     app = QApplication(sys.argv)
+    app.setStyleSheet(
+        """
+            QTextBrowser {
+                border: none;
+                color: rgb(255, 255, 255);
+                background-color: rgb(30, 30, 30);
+            }
+        """
+    )
     main_window = ZQ()
     p = main_window.palette()
     p.setColor(main_window.backgroundRole(), QColor(30, 30, 30))
