@@ -84,17 +84,19 @@ def load_students(max_meeting_seconds: int) -> Tuple[List[str], int]:
     return [], max_meeting_seconds
 
 
-def add_5_minute_break(names: List[str]) -> None:
+def add_5_minute_break(names: List[str]) -> int:
     """Adds a 5-minute break to the end of the list of students.
 
     If there is already an n-minute break there, it is changed to an
-    n+5-minute break.
+    n+5-minute break. Returns the number of minutes in the break.
     """
     if names and names[-1].endswith("-minute break"):
-        minutes = int(names[-1].split("-")[0])
-        names[-1] = f"{minutes + 5}-minute break"
+        minutes = int(names[-1].split("-")[0]) + 5
+        names[-1] = f"{minutes}-minute break"
     else:
         names.append("5-minute break")
+        minutes = 5
+    return minutes
 
 
 def get_help_text() -> str:

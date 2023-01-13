@@ -233,7 +233,7 @@ class ZQ(QWidget):
             and self.individual_seconds
             and not self.paused
             and (
-                (self.current_mode == Mode.INDIVIDUAL and len(self.student_names) > 1)
+                (self.current_mode == Mode.INDIVIDUAL and len(self.student_names) > 0)
                 or self.individual_seconds > self.min_empty_waitlist_seconds
             )
         ):
@@ -315,7 +315,9 @@ class ZQ(QWidget):
                 self.student_names, self.individual_seconds, self.max_individual_seconds
             )
         elif key == "b":
-            add_5_minute_break(self.student_names)
+            minutes = add_5_minute_break(self.student_names)
+            if len(self.student_names) == 1:
+                self.individual_seconds = minutes * 60
         elif key == "$":  # randomize the order of the students in the queue
             random.shuffle(self.student_names)
         elif key == "m":
