@@ -1,13 +1,8 @@
 import sys
+from importlib import metadata as importlib_metadata
 
-try:
-    from importlib import metadata as importlib_metadata
-except ImportError:
-    # Backwards compatibility - importlib.metadata was added in Python 3.8
-    import importlib_metadata
-
-from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QApplication
 
 try:
     from zq import ZQ
