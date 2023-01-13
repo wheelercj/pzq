@@ -56,7 +56,7 @@ def set_QTextBrowser_text(tb: QTextBrowser, text: str) -> None:
     # not allow both HTML and newlines in the same string.
     tb.clear()
     tb.setCurrentCharFormat(QTextCharFormat())
-    for line in convert_Rich_style_to_html(text).split("\n"):
+    for line in convert_Rich_style_to_html(text.rstrip("\n")).split("\n"):
         tb.append(line)
     tb.scrollToAnchor("top")
 
