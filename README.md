@@ -21,7 +21,20 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 Download zq here: https://github.com/wheelercj/zq/releases.
 
-Currently, an installer is available for Windows and the source code is available to run on Mac, Linux, and Windows. With Python on your device, you can download the source code, install the dependencies with `pip install -r requirements.txt`, and then run zq with the terminal command `python3 src/zq` for Mac or Linux or `py src/zq` for Windows while in the app's folder. If you will use this often, you might want to [create your own terminal command](https://wheelercj.github.io/notes/pages/20220320181252.html) to make running zq easier.
+Currently, an installer is available only for Windows, but the source code runs on all major desktop platforms.
+
+**installing from source**
+
+1. Install [Python 3.10](https://www.python.org/downloads/release/python-3108/) if you haven't already.
+2. Use `git clone https://github.com/wheelercj/zq.git` where you want the project's folder to appear.
+3. If you want to use a virtual environment:
+   1. `cd` into the new folder
+   2. Create a virtual environment, such as with `py -3.10 -m venv venv` or `python3.10 -m venv venv`.
+   3. [Activate the virtual environment](https://python.land/virtual-environments/virtualenv).
+4. Use `pip install -r requirements.txt` to install the app's dependencies.
+5. If you will edit the app, use `pip install -r requirements-dev.txt` to install the development dependencies.
+6. If you will make commits, run `pre-commit install` to set up the git [pre-commit](https://pre-commit.com/) hooks.
+7. Run the app with `py src/zq` or `python3 src/zq`.
 
 ## keyboard shortcuts
 
