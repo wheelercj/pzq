@@ -2,8 +2,6 @@ import re
 import sqlite3
 from enum import Enum
 from textwrap import dedent
-from typing import List
-from typing import Tuple
 
 
 VERSION = "1.0.0"
@@ -66,7 +64,7 @@ def create_students_table() -> None:
         conn.commit()
 
 
-def load_students(max_meeting_seconds: int) -> Tuple[List[str], int]:
+def load_students(max_meeting_seconds: int) -> tuple[list[str], int]:
     """Loads student names and wait times from the database."""
     try:
         with sqlite3.connect("students.db") as conn:
@@ -84,7 +82,7 @@ def load_students(max_meeting_seconds: int) -> Tuple[List[str], int]:
     return [], max_meeting_seconds
 
 
-def add_5_minute_break(names: List[str]) -> int:
+def add_5_minute_break(names: list[str]) -> int:
     """Adds a 5-minute break to the end of the list of students.
 
     If there is already an n-minute break there, it is changed to an
@@ -153,8 +151,8 @@ def get_about_text(VERSION: str) -> str:
 
 def get_timer_message(
     current_mode: Mode,
-    mode_names: List[str],
-    student_names: List[str],
+    mode_names: list[str],
+    student_names: list[str],
     group_seconds: int,
     individual_seconds: int,
     max_individual_seconds: int,
@@ -190,13 +188,13 @@ def get_timer_message(
 
 
 def go_to_next_student(
-    student_names: List[str], individual_seconds: int, max_individual_seconds: int
-) -> Tuple[List[str], int, int]:
+    student_names: list[str], individual_seconds: int, max_individual_seconds: int
+) -> tuple[list[str], int, int]:
     """Rotates the queue forwards.
 
     Parameters
     ----------
-    student_names : List[str]
+    student_names : list[str]
         The list of student names.
     individual_seconds : int
         The number of seconds remaining for the individual meeting.
@@ -205,7 +203,7 @@ def go_to_next_student(
 
     Returns
     -------
-    List[str]
+    list[str]
         The list of student names.
     int
         The number of seconds in the group meeting.
@@ -222,13 +220,13 @@ def go_to_next_student(
 
 
 def return_to_previous_meeting(
-    student_names: List[str], individual_seconds: int, previous_individual_seconds: int
-) -> Tuple[List[str], int, int]:
+    student_names: list[str], individual_seconds: int, previous_individual_seconds: int
+) -> tuple[list[str], int, int]:
     """Rotates the queue backwards.
 
     Parameters
     ----------
-    student_names : List[str]
+    student_names : list[str]
         The list of students in the queue.
     individual_seconds : int
         The number of seconds remaining for the individual meeting.
@@ -238,7 +236,7 @@ def return_to_previous_meeting(
 
     Returns
     -------
-    List[str]
+    list[str]
         The list of students in the queue.
     int
         The individual meeting duration.
@@ -254,13 +252,13 @@ def return_to_previous_meeting(
 
 
 def remove_last_student(
-    student_names: List[str], individual_seconds: int, max_individual_seconds: int
-) -> Tuple[List[str], int]:
+    student_names: list[str], individual_seconds: int, max_individual_seconds: int
+) -> tuple[list[str], int]:
     """Removes the last student from the queue and resets the timer if needed.
 
     Parameters
     ----------
-    student_names : List[str]
+    student_names : list[str]
         The list of students in the queue.
     individual_seconds : int
         The number of seconds remaining for the individual meeting.
@@ -269,7 +267,7 @@ def remove_last_student(
 
     Returns
     -------
-    List[str]
+    list[str]
         The list of students in the queue.
     int
         The individual meeting duration.
