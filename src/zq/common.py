@@ -128,7 +128,7 @@ def get_help_text() -> str:
         [b][#008000]F11[/#008000][/b] — toggles fullscreen.
 
         For more tips and help, visit <a style="color: white" href="https://github.com/wheelercj/zq">zq's GitHub page</a>.
-        """  # noqa
+        """  # noqa: E501
     )
 
 
@@ -145,7 +145,7 @@ def get_about_text(VERSION: str) -> str:
         <a style="color: white" href="https://github.com/wheelercj/zq/releases">Check for updates.</a>
 
         [#8E8E8E]You can close this by pressing @ again.[/#8E8E8E]
-        """  # noqa
+        """  # noqa: E501
     )
 
 
