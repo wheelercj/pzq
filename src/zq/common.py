@@ -256,7 +256,7 @@ def return_to_previous_meeting(
 def remove_last_student(
     student_names: List[str], individual_seconds: int, max_individual_seconds: int
 ) -> Tuple[List[str], int]:
-    """Removes the last student from the queue.
+    """Removes the last student from the queue and resets the timer if needed.
 
     Parameters
     ----------
