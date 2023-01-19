@@ -4,7 +4,7 @@ from enum import Enum
 from textwrap import dedent
 
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 color_pattern = re.compile(
     r"\[(?P<color>#[0-9a-fA-F]{6})\](?P<body>[^\[]*?)\[/(?:#[0-9a-fA-F]{6})?\]"
 )

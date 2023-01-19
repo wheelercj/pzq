@@ -1,7 +1,7 @@
 [tool.briefcase]
 project_name = "zq"
 bundle = "chris.wheeler.zq-timer"
-version = "1.0.1"
+version = "1.0.2"
 url = "https://github.com/wheelercj/zq"
 license = "MIT license"
 author = 'Chris Wheeler'

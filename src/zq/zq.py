@@ -233,7 +233,14 @@ class ZQ(QWidget):
             and self.individual_seconds
             and not self.paused
             and (
-                (self.current_mode == Mode.INDIVIDUAL and len(self.student_names) > 0)
+                (
+                    self.current_mode == Mode.INDIVIDUAL
+                    and (len(self.student_names) > 1)
+                    or (
+                        len(self.student_names) == 1
+                        and self.student_names[0].endswith("-minute break")
+                    )
+                )
                 or self.individual_seconds > self.min_empty_waitlist_seconds
             )
         ):
