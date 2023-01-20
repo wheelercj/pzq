@@ -19,9 +19,9 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 ## download
 
-Download zq here: https://github.com/wheelercj/zq/releases.
+Windows users, [click here to download zq](https://github.com/wheelercj/zq/releases/download/v1.0.2/zq-1.0.2.msi).
 
-Currently, an installer is available only for Windows, but the source code runs on all major desktop platforms.
+Mac and Linux users can use the app by downloading and running the source code following the instructions below.
 
 **installing from source**
 
@@ -32,8 +32,8 @@ Currently, an installer is available only for Windows, but the source code runs 
    2. Create a virtual environment, such as with `py -3.10 -m venv venv` or `python3.10 -m venv venv`.
    3. [Activate the virtual environment](https://python.land/virtual-environments/virtualenv).
 4. Use `pip install -r requirements.txt` to install the app's dependencies.
-5. If you will edit the app, use `pip install -r requirements-dev.txt` to install the development dependencies.
-6. If you will make commits, run `pre-commit install` to set up the git [pre-commit](https://pre-commit.com/) hooks.
+5. If you will edit the app's code, use `pip install -r requirements-dev.txt` to install the development dependencies.
+6. If you will make Git commits, run `pre-commit install` to set up the Git [pre-commit](https://pre-commit.com/) hooks.
 7. Run the app with `py src/zq` or `python3 src/zq`.
 
 ## keyboard shortcuts
