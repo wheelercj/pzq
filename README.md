@@ -25,16 +25,10 @@ Mac and Linux users can use the app by downloading and running the source code f
 
 **installing from source**
 
-1. Install [Python 3.10](https://www.python.org/downloads/release/python-3108/) if you haven't already.
-2. Use `git clone https://github.com/wheelercj/zq.git` where you want the project's folder to appear.
-3. If you want to use a virtual environment:
-   1. `cd` into the new folder
-   2. Create a virtual environment, such as with `py -3.10 -m venv venv` or `python3.10 -m venv venv`.
-   3. [Activate the virtual environment](https://python.land/virtual-environments/virtualenv).
-4. Use `pip install -r requirements.txt` to install the app's dependencies.
-5. If you will edit the app's code, use `pip install -r requirements-dev.txt` to install the development dependencies.
-6. If you will make Git commits, run `pre-commit install` to set up the Git [pre-commit](https://pre-commit.com/) hooks.
-7. Run the app with `py src/zq` or `python3 src/zq`.
+0. Install [Python 3.10](https://www.python.org/downloads/release/python-3108/) if you haven't already.
+1. Use `git clone https://github.com/wheelercj/zq.git` where you want the project's folder to appear and `cd` into the new folder.
+2. Use `pip install -r requirements.txt` to install the app's dependencies.
+3. Run the app with `py src/zq` or `python3 src/zq`.
 
 ## keyboard shortcuts
 
