@@ -6,7 +6,7 @@ Some meeting waitlists are confusing and isolating for those waiting for help, b
 
 ![demo gif](https://media.giphy.com/media/Ccf6gfNpiIuKA8GA88/giphy.gif)
 
-[![zq demo video](images/video_thumbnail.png)](https://www.youtube.com/watch?v=7DlZEQXcjiI)
+https://user-images.githubusercontent.com/39012918/214133712-5fa1146e-99d5-42c6-994c-9dfc1f37209e.mp4
 
 ## features
 
